@@ -1,0 +1,10 @@
+Implementation of a voucher / treasury system, particularly for the UA
+but intended to be general enough for other groups to use it.
+
+== External Dependencies ==
+
+=== django-treebeard ===
+
+Tree library. See http://django-treebeard.googlecode.com/svn/docs/index.html.
+Install it so that it resides in /django-treebeard-1.1/dist-packages/treebeard
+(or otherwise symlinked from treasury/treebeard).
