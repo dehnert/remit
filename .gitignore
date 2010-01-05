@@ -1,1 +1,4 @@
 *.pyc
+*.sqlite
+django-treebeard-1.1/
+django-treebeard-1.1.tar.gz
