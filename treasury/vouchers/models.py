@@ -2,6 +2,7 @@ from django.db import models
 import treebeard.mp_tree
 import settings
 
+
 class BudgetArea(treebeard.mp_tree.MP_Node):
     name = models.CharField(max_length=50)
     comment = models.TextField(blank=True)
@@ -57,6 +58,7 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
     def __unicode__(self,):
         return u"%s [%s] (%s)" % (self.name, self.contact_address(), self.always, )
 
+
 class BudgetTerm(models.Model):
     name = models.CharField(max_length=20)
     slug = models.SlugField(max_length=20)
@@ -66,6 +68,7 @@ class BudgetTerm(models.Model):
 
     def __unicode__(self,):
         return "%s (%s to %s [due %s])" % (self.name, self.start_date, self.end_date, self.submit_deadline, )
+
 
 class BudgetAreaTerm(models.Model):
     budget_area = models.ForeignKey(BudgetArea)

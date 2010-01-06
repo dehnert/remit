@@ -3,12 +3,15 @@ from django.contrib import admin
 
 indent_str = u"\u00A0\u00A0"
 
+
 class BudgetAreaAdmin(admin.ModelAdmin):
     pass
     #fields = [ 'path', 'name', 'comment', 'owner', 'interested', ]
 
+
 class BudgetTermAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
+
 
 class ReimbursementRequestAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
@@ -27,6 +30,7 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
         ('Recipient', {'fields': ['check_to_name', 'check_to_email', 'check_to_addr', ] }),
         ('Expense details', {'fields': ['amount', 'budget_area', 'budget_term', ] }),
     ]
+
 
 admin.site.register(vouchers.models.BudgetArea, BudgetAreaAdmin)
 admin.site.register(vouchers.models.BudgetTerm, BudgetTermAdmin)
