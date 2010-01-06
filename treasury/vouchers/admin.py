@@ -7,6 +7,9 @@ class BudgetAreaAdmin(admin.ModelAdmin):
     pass
     #fields = [ 'path', 'name', 'comment', 'owner', 'interested', ]
 
+class BudgetTermAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
+
 class ReimbursementRequestAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         field = super(ReimbursementRequestAdmin, self).formfield_for_foreignkey(
@@ -26,6 +29,6 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
     ]
 
 admin.site.register(vouchers.models.BudgetArea, BudgetAreaAdmin)
-admin.site.register(vouchers.models.BudgetTerm)
+admin.site.register(vouchers.models.BudgetTerm, BudgetTermAdmin)
 admin.site.register(vouchers.models.BudgetAreaTerm)
 admin.site.register(vouchers.models.ReimbursementRequest, ReimbursementRequestAdmin)

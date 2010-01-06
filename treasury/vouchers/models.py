@@ -59,14 +59,22 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
 
 class BudgetTerm(models.Model):
     name = models.CharField(max_length=20)
+    slug = models.SlugField(max_length=20)
     start_date = models.DateField()
     end_date = models.DateField()
     submit_deadline = models.DateField()
+
+    def __unicode__(self,):
+        return "%s (%s to %s [due %s])" % (self.name, self.start_date, self.end_date, self.submit_deadline, )
 
 class BudgetAreaTerm(models.Model):
     budget_area = models.ForeignKey(BudgetArea)
     budget_term = models.ForeignKey(BudgetTerm)
     comment = models.TextField(blank=True, )
+
+    def __unicode__(self,):
+        return "%s during %s" % (self.budget_area, self.budget_term, )
+
 
 class ReimbursementRequest(models.Model):
     submitter = models.CharField(max_length=10) # MIT username of submitter
