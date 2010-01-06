@@ -87,4 +87,5 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'treebeard',
     'vouchers',
+    'finance_core',
 )

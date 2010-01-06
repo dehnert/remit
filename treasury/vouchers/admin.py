@@ -1,17 +1,6 @@
 import vouchers
 from django.contrib import admin
 
-indent_str = u"\u00A0\u00A0"
-
-
-class BudgetAreaAdmin(admin.ModelAdmin):
-    pass
-    #fields = [ 'path', 'name', 'comment', 'owner', 'interested', ]
-
-
-class BudgetTermAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
-
 
 class ReimbursementRequestAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
@@ -23,7 +12,7 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
         return field
 
     def get_budgetarea_name(self, area, ):
-        return indent_str*area.depth + unicode(area)
+        return area.indented_name()
 
     fieldsets = [
         ('Request metadata', {'fields': ['submitter']}),
@@ -32,7 +21,4 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
     ]
 
 
-admin.site.register(vouchers.models.BudgetArea, BudgetAreaAdmin)
-admin.site.register(vouchers.models.BudgetTerm, BudgetTermAdmin)
-admin.site.register(vouchers.models.BudgetAreaTerm)
 admin.site.register(vouchers.models.ReimbursementRequest, ReimbursementRequestAdmin)
