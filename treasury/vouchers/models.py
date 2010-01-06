@@ -11,3 +11,13 @@ class ReimbursementRequest(models.Model):
     amount = models.DecimalField(max_digits=7, decimal_places=2)
     budget_area = models.ForeignKey(BudgetArea)
     budget_term = models.ForeignKey(BudgetTerm)
+
+    def __unicode__(self, ):
+        return "%s (%s) (by %s) for $%s in %s during %s" % (
+            self.check_to_name,
+            self.check_to_email,
+            self.submitter,
+            self.amount,
+            self.budget_area.name,
+            self.budget_term.name,
+        )
