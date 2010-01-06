@@ -19,6 +19,7 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
         ('Recipient', {'fields': ['check_to_name', 'check_to_email', 'check_to_addr', ] }),
         ('Expense details', {'fields': ['amount', 'budget_area', 'budget_term', ] }),
     ]
+    list_display = ('submitter', 'check_to_name', 'amount', 'budget_area', 'budget_term', )
 
 
 admin.site.register(vouchers.models.ReimbursementRequest, ReimbursementRequestAdmin)
