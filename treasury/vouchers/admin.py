@@ -15,7 +15,7 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
         return area.indented_name()
 
     fieldsets = [
-        ('Request metadata', {'fields': ['submitter']}),
+        ('Request metadata', {'fields': ['submitter', 'request_time', 'approval_time', 'printing_time', ]}),
         ('Recipient', {'fields': ['check_to_name', 'check_to_email', 'check_to_addr', ] }),
         ('Expense details', {'fields': ['amount', 'budget_area', 'budget_term', ] }),
     ]

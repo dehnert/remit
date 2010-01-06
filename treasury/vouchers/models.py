@@ -2,6 +2,8 @@ from django.db import models
 import settings
 from finance_core.models import BudgetArea, BudgetTerm
 
+import datetime
+
 
 class ReimbursementRequest(models.Model):
     submitter = models.CharField(max_length=10) # MIT username of submitter
@@ -11,6 +13,9 @@ class ReimbursementRequest(models.Model):
     amount = models.DecimalField(max_digits=7, decimal_places=2)
     budget_area = models.ForeignKey(BudgetArea)
     budget_term = models.ForeignKey(BudgetTerm)
+    request_time = models.DateTimeField(default=datetime.datetime.now)
+    approval_time = models.DateTimeField(blank=True)
+    printing_time = models.DateTimeField(blank=True)
 
     def __unicode__(self, ):
         return "%s (%s) (by %s) for $%s in %s during %s" % (
