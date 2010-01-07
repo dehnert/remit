@@ -5,6 +5,7 @@ from vouchers.models import ReimbursementRequest
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import Http404, HttpResponseRedirect
+from django.forms import Form
 from django.forms import ModelForm
 from django.forms import ModelChoiceField
 from django.core.urlresolvers import reverse
@@ -22,7 +23,42 @@ class RequestForm(ModelForm):
             'check_to_addr',
         )
 
-class BudgetAreaField(ModelChoiceField):
+class CommitteesField(ModelChoiceField):
+    def __init__(self, *args, **kargs):
+        base_area = BudgetArea.get_by_path(['Accounts', 'Assets', 'Budget', ])
+        self.strip_levels = base_area.depth
+        areas = (base_area.get_descendants()
+            .filter(depth__lte=base_area.depth+2)
+            .exclude(name='Holding')
+        )
+        ModelChoiceField.__init__(self, queryset=areas,
+            help_text='Select the appropriate committe or other budget area',
+            *args, **kargs)
+
+    def label_from_instance(self, obj,):
+        return obj.indented_name(strip_levels=self.strip_levels)
+
+class SelectRequestBasicsForm(Form):
+    area = CommitteesField()
+    term = ModelChoiceField(queryset = BudgetTerm.objects.all())
+
+@user_passes_test(lambda u: u.is_authenticated())
+def select_request_basics(http_request, ):
+    if http_request.method == 'POST': # If the form has been submitted...
+        form = SelectRequestBasicsForm(http_request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            term = form.cleaned_data['term'].slug
+            area = form.cleaned_data['area'].id
+            return HttpResponseRedirect(reverse(submit_request, args=[term, area],)) # Redirect after POST
+    else:
+        form = SelectRequestBasicsForm() # An unbound form
+
+    context = {
+        'form':form,
+    }
+    return render_to_response('vouchers/select.html', context)
+
+class CommitteeBudgetAreasField(ModelChoiceField):
     def __init__(self, base_area, *args, **kargs):
         self.strip_levels = base_area.depth
         areas = base_area.get_descendants()
@@ -44,13 +80,13 @@ def submit_request(http_request, term, committee):
 
     if http_request.method == 'POST': # If the form has been submitted...
         form = RequestForm(http_request.POST, instance=new_request) # A form bound to the POST data
-        form.fields['budget_area'] = BudgetAreaField(comm_obj)
+        form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
         if form.is_valid(): # All validation rules pass
             form.save()
             return HttpResponseRedirect(reverse(review_request, args=[new_request.pk],)) # Redirect after POST
     else:
         form = RequestForm(instance=new_request) # An unbound form
-        form.fields['budget_area'] = BudgetAreaField(comm_obj)
+        form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
 
     context = {
         'term':term_obj,

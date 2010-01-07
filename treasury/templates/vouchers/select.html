@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Reimbursement Request &raquo; Select Term and Area{% endblock %}
+{% block content %}
+
+<h2>UA Reimbursement Request: Step 1: Select Term and Area</h2>
+
+<form method="post">
+<table>
+{{ form.as_table }}
+<tr><td></td><td><input type='submit' value='Proceed' /></td></tr>
+</table>
+</form>
+
+{% endblock %}
