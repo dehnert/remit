@@ -2,6 +2,31 @@
 
 {% block title %}Submit reimbursement request{% endblock %}
 {% block content %}
-<p>Term: {{term}}</p>
-<p>Committee: {{comm}}</p>
+
+<h2>UA Reimbursement Request Form</h2>
+
+<form method="post">
+<table>
+<tr>
+    <td></td>
+    <th>You are requesting a reimbursement from:</th>
+</tr>
+<tr>
+    <th>Term</th>
+    <td>{{term}}</td>
+</tr>
+<tr>
+    <th>Committee</th>
+    <td>{{comm}}</td>
+</tr>
+
+<tr>
+    <td></td>
+    <th>Request details:</th>
+</tr>
+{{ form.as_table }}
+<tr><td></td><td><input type='submit' value='Request Reimbursement' /></td></tr>
+</table>
+</form>
+
 {% endblock %}

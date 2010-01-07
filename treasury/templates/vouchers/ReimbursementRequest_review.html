@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Review reimbursement request for "{{ rr.name }}"{% endblock %}
+{% block content %}
+
+<h2>Review reimbursement request: {{rr.name}}</h2>
+
+<table>
+<tr>
+    <th>Short description</th>
+    <td>{{rr.name}}</td>
+</tr>
+<tr>
+    <th>Long description</th>
+    <td>{{rr.description}}</td>
+</tr>
+<tr>
+    <th>Amount</th>
+    <td>${{rr.amount}}</td>
+</tr>
+<tr>
+    <th>Term</th>
+    <td>{{rr.budget_term}}</td>
+</tr>
+<tr>
+    <th>Budget area</th>
+    <td>{{rr.budget_area}}</td>
+</tr>
+<tr>
+    <th>Submitter</th>
+    <td>{{rr.submitter}}</td>
+</tr>
+<tr>
+    <th>Check recipient</th>
+    <td>
+        <p>{{rr.check_to_name}} (email: {{rr.check_to_email}})</p>
+        <p>{{rr.check_to_addr}}</p>
+    </td>
+</tr>
+<tr>
+    <th>Request Time</th>
+    <td>{{rr.request_time}}</td>
+</tr>
+<tr>
+    <th>Approval Time</th>
+    <td>{{rr.approval_time}}</td>
+</tr>
+<tr>
+    <th>Printing Time</th>
+    <td>{{rr.printing_time}}</td>
+</tr>
+</table>
+
+{% endblock %}
