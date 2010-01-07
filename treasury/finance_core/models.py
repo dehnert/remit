@@ -57,8 +57,8 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
         html = html + prefix + "</ul>\n"
         return html
 
-    def indented_name(self):
-        return self.indent_str*self.depth + unicode(self)
+    def indented_name(self, strip_levels=0):
+        return self.indent_str*(self.depth-strip_levels) + unicode(self)
 
     def __unicode__(self,):
         return u"%s [%s] (%s)" % (self.name, self.contact_address(), self.always, )
