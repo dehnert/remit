@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 # Necessary views
-import treasury.finance_core.views
+import finance_core.views
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -9,9 +9,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
-    (r'^accounts/display_tree', treasury.finance_core.views.display_tree),
-    (r'^vouchers/', include('treasury.vouchers.urls')),
-    (r'^finance_core/', include('treasury.finance_core.urls')),
+    (r'^accounts/display_tree', finance_core.views.display_tree),
+    (r'^vouchers/', include('vouchers.urls')),
+    (r'^finance_core/', include('finance_core.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
