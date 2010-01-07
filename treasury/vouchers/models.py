@@ -13,7 +13,7 @@ class ReimbursementRequest(models.Model):
     amount = models.DecimalField(max_digits=7, decimal_places=2)
     budget_area = models.ForeignKey(BudgetArea)
     budget_term = models.ForeignKey(BudgetTerm)
-    request_time = models.DateTimeField(default=datetime.datetime.now)
+    request_time = models.DateTimeField(auto_now_add=True)
     approval_time = models.DateTimeField(blank=True)
     printing_time = models.DateTimeField(blank=True)
     name = models.CharField(max_length=50,)
