@@ -16,9 +16,12 @@ class ReimbursementRequest(models.Model):
     request_time = models.DateTimeField(default=datetime.datetime.now)
     approval_time = models.DateTimeField(blank=True)
     printing_time = models.DateTimeField(blank=True)
+    name = models.CharField(max_length=50,)
+    description = models.TextField(blank=True)
 
     def __unicode__(self, ):
-        return "%s (%s) (by %s) for $%s in %s during %s" % (
+        return "%s: %s (%s) (by %s) for $%s in %s during %s" % (
+            self.name,
             self.check_to_name,
             self.check_to_email,
             self.submitter,

@@ -15,11 +15,11 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
         return area.indented_name()
 
     fieldsets = [
+        ('Expense details', {'fields': ['name', 'description', 'amount', 'budget_area', 'budget_term', ] }),
         ('Request metadata', {'fields': ['submitter', 'request_time', 'approval_time', 'printing_time', ]}),
         ('Recipient', {'fields': ['check_to_name', 'check_to_email', 'check_to_addr', ] }),
-        ('Expense details', {'fields': ['amount', 'budget_area', 'budget_term', ] }),
     ]
-    list_display = ('submitter', 'check_to_name', 'amount', 'budget_area', 'budget_term', )
+    list_display = ('name', 'submitter', 'check_to_name', 'amount', 'budget_area', 'budget_term', )
 
 
 admin.site.register(vouchers.models.ReimbursementRequest, ReimbursementRequestAdmin)
