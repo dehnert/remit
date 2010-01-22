@@ -84,6 +84,82 @@ class BudgetAreaTerm(models.Model):
         return "%s during %s" % (self.budget_area, self.budget_term, )
 
 
+class Transaction(models.Model):
+    name = models.CharField(max_length=40)
+    desc = models.TextField(blank=True)
+
+    def __unicode__(self,):
+        return self.name
+
+def make_transfer(name, amount,
+    layer, budget_term, from_area, to_area, desc, ):
+    tx = Transaction(
+        name=name,
+        desc=desc,
+    )
+    tx.save()
+
+    from_li = LineItem(
+        label='Send: %s' % (name, ),
+        amount=-amount,
+        budget_area=from_area,
+        budget_term=budget_term,
+        layer=layer,
+        tx=tx,
+    )
+    from_li.save()
+
+    to_li = LineItem(
+        label='Receive: %s' % (name, ),
+        amount=amount,
+        budget_area=to_area,
+        budget_term=budget_term,
+        layer=layer,
+        tx=tx,
+    )
+    to_li.save()
+
+    return tx
+
+
+class LineItem(models.Model):
+    tx = models.ForeignKey(Transaction)
+    amount = models.DecimalField(max_digits=7, decimal_places=2, help_text='Do not include "$"')
+    label = models.CharField(max_length=40)
+    budget_area = models.ForeignKey(BudgetArea)
+    budget_term = models.ForeignKey(BudgetTerm)
+    layer = models.IntegerField() # this might actually be a Transaction property...
+
+    def layer_string(self,):
+        layer = self.layer
+        return layer_name(get_layer_by_num(layer))
+
+    def __unicode__(self, ):
+        return "%s: %s: $%s (%s) in %s during %s" % (
+            self.tx, self.label, self.amount, self.layer,
+            self.budget_area, self.budget_term, )
+
+
+layers=(
+    (10, 'budget'),
+    (20, 'allocation'),
+    (30, 'expenditure'),
+    (40, 'closeout'),
+)
+def get_layer_by_name(name):
+    for layer in layers:
+        if name == layer[1]:
+            return layer
+    raise KeyError, "layer %s not found" % (name, )
+def get_layer_by_num(num):
+    for layer in layers:
+        if num == layer[0]:
+            return layer
+    raise KeyError, "layer %d not found" % (num, )
+def layer_name(layer): return layer[1]
+def layer_num(layer):  return layer[0]
+
+
 def coerce_full_email(email):
     if '@' in email: return email
     else: return email + '@' + settings.DEFAULT_DOMAIN
