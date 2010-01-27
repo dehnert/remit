@@ -4,6 +4,7 @@ import csv
 import subprocess
 import vouchers.models
 import finance_core.models
+from django.db import connection
 from finance_core.models import BudgetArea
 from finance_core.models import coerce_full_email
 from finance_core.models import Transaction
@@ -124,13 +125,15 @@ def main(committees_file, budget_file, term_name, ):
     (depth, ) = do_populate_committees(committees)
     do_process_rows(committees, budget_file, term, depth)
 
+
+def spring_2010():
+    committee_file = open('/mit/ua/officers/treasurer/resources/software/committees.csv')
+    budget_file = open('/mit/ua/officers/treasurer/budgeting/FY10/private/spring-working.csv')
+    term_name = 'Spring 2010'
+    main(committee_file, budget_file, term_name, )
+    print connection.queries
+
+
 if __name__== '__main__':
-    print "Syntax: %s committee_file format_file budget_file budget_term [override_address]" % (sys.argv[0], )
-    committees_file = open(sys.argv[1])
-    format_str = open(sys.argv[2]).read()
-    budget_file = open(sys.argv[3])
-    term = sys.argv[4]
-    override_address = False
-    if(len(sys.argv) > 5):
-        override_address = sys.argv[5]
-    main(committees_file, format_str, budget_file, term, override_address=override_address,)
+    #print "Syntax: %s committee_file format_file budget_file budget_term [override_address]" % (sys.argv[0], )
+    spring_2010()
