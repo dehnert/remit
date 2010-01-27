@@ -48,7 +48,9 @@ def do_populate_area_structure():
                     BudgetArea.add_root(name=name, comment=comment,
                         always=True, use_owner=True,
                         owner='ua-treasurer@mit.edu',
-                        interested='ua-treasurer@mit.edu', )
+                        interested='ua-treasurer@mit.edu',
+                        account_number=0,
+                    )
         # This is sorta evil, in that it abuses the fact that Python
         # won't put name out of scope
         parent = BudgetArea.objects.get(name=name, depth=depth)
@@ -72,6 +74,7 @@ def do_populate_committees(committees):
                 owner=coerce_full_email(comm['chair_list']),
                 interested=coerce_full_email(comm['email_list']),
                 use_owner=comm['prefer_chair'],
+                account_number=(comm['account'] or 0),
                 always=True,
             )
     return (depth+1, )

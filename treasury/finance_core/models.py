@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, connection
 import settings
 import treebeard.mp_tree
 
@@ -8,6 +8,8 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
 
     name = models.CharField(max_length=50)
     comment = models.TextField(blank=True)
+
+    # Applicable to every term?
     always = models.BooleanField(blank=True, default=False)
 
     # Contact / ACL information
@@ -15,6 +17,7 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
     owner = models.EmailField(help_text = 'Email address of the officer responsible for the area', blank=True) # owner of the budget area
     interested = models.EmailField(help_text='Email address of parties interested in the area', blank=True) # interested parties (ie, whole committee)
     use_owner = models.BooleanField(default=False, blank=True)
+    account_number = models.IntegerField(help_text='Account number: for example, cost object or GL', blank=True, null=True)
 
     def contact_address(self,):
         address = ''
@@ -23,6 +26,22 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
         else:
             address = self.interested or self.owner
         return address or self.get_parent().contact_address()
+
+    def get_account_number(self):
+        """Retrieve the account number for this account.
+
+        This properly recurses through the hierarchy until reaching the root
+        or an account with the account number set."""
+
+        print self.account_number
+        if self.account_number:
+            return self.account_number
+        else:
+            parent = self.get_parent()
+            if parent:
+                return parent.get_account_number()
+            else:
+                return 0
 
     def mark_used(self, term, comment=""):
         BudgetAreaTerm.objects.get_or_create(
