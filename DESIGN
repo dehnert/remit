@@ -1,9 +1,9 @@
 Design of Remit
 ===============
 
-Remit aims to be a general system for managing MIT student group finances.
-One core piece of functionality is generating the documentation required
-to make SAFO remit money to students.
+Remit aims to be a general system for managing MIT student group finances.  The
+name comes from "MIT" and the term "remit": One core piece of functionality is
+generating the documentation required to make SAFO remit money to students.
 
 Core functionality objectives
 -----------------------------
@@ -29,6 +29,9 @@ It includes the following core models:
 * BudgetTerm, representing a financial period
 * Transaction, representing a transaction
 * LineItem, representing a line item within a transaction
+
+This module uses the Treebeard project
+(http://docs.tabo.pe/django-treebeard/tip/) to implement a tree of BudgetAreas.
 
 Basic request and voucher workflow (vouchers)
 ---------------------------------------------

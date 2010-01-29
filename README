@@ -1,5 +1,11 @@
-Implementation of a voucher / treasury system, particularly for the UA
-but intended to be general enough for other groups to use it.
+= Remit =
+
+Remit aims to be a general system for managing MIT student group finances.  The
+name comes from "MIT" and the term "remit": One core piece of functionality is
+generating the documentation required to make SAFO remit money to students.
+
+It grew out of an effort to ease the UA's treasury, but is intended to be
+general enough for other groups to use it.
 
 == External Dependencies ==
 
