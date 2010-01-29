@@ -39,10 +39,8 @@ class CommitteesField(ModelChoiceField):
         return obj.indented_name(strip_levels=self.strip_levels)
 
 class SelectRequestBasicsForm(Form):
-    area = None
+    area = CommitteesField()
     term = ModelChoiceField(queryset = BudgetTerm.objects.all())
-    def __init__(self, *args, **kargs):
-        self.area = CommitteesField()
 
 @user_passes_test(lambda u: u.is_authenticated())
 def select_request_basics(http_request, ):
