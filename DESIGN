@@ -1,0 +1,45 @@
+Design of Remit
+===============
+
+Remit aims to be a general system for managing MIT student group finances.
+One core piece of functionality is generating the documentation required
+to make SAFO remit money to students.
+
+Core functionality objectives
+-----------------------------
+
+* Self-service reimbursement request submission --- individual members
+  should be able to request reimbursement through a web interface, providing
+  (almost?) all of the data required to generate a voucher
+* Allow multi-stage approval processes --- e.g., a committee chair approves
+  a reimbursement request and then the group treasurer approves the request
+* Integrate with budgeting, for example by notifying the treasurer before
+  approving a request for more money than remains in an account
+* Allow printing of vouchers
+* Support basic reporting
+* Allow import and export in useful formats (e.g., CSV)
+
+Basic financial support (finance_core)
+--------------------------------------
+
+finance_core provides a basic double-entry bookkeeping system.
+
+It includes the following core models:
+* BudgetArea, representing an account
+* BudgetTerm, representing a financial period
+* Transaction, representing a transaction
+* LineItem, representing a line item within a transaction
+
+Basic request and voucher workflow (vouchers)
+---------------------------------------------
+
+vouchers provides the core of the request/voucher workflow.
+
+It includes the following core models:
+* ReimbursementRequest, representing a single request
+* Voucher, representing a single generated voucher
+
+This package also currently includes the import_budget script, designed to
+take a budget spreadsheet and committee list like the UA has and automatically
+input it into the system. The script should probably be moved out into a new
+"tools" project or the like.
