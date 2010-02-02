@@ -12,6 +12,7 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     ('Remit team', 'remit@mit.edu'),
 )
+SERVER_EMAIL = 'remit@mit.edu'
 
 MANAGERS = ADMINS
 
