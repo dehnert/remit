@@ -3,3 +3,16 @@ tr.sect-head td, tr.sect-head th
     padding-top: 1em;
     text-decoration: underline;
 }
+table.reimbursement-request
+{
+    border-collapse: collapse;
+}
+table.reimbursement-request th, table.reimbursement-request td
+{
+    border: 1px solid black;
+    padding: 2px;
+}
+table.reimbursement-request th
+{
+    background: #99F;
+}
