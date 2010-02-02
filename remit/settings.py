@@ -1,5 +1,6 @@
 # Django settings for treasury project.
 import os
+import sys
 
 SITE_ROOT = os.path.normpath(os.path.dirname(__file__))
 DEFAULT_DOMAIN = 'mit.edu'
@@ -71,7 +72,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.RemoteUserMiddleware',
 )
 
-ROOT_URLCONF = 'treasury.urls'
+ROOT_URLCONF = 'remit.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
