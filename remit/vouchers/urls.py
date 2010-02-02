@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-import treasury.vouchers.views
+import vouchers.views
 
 urlpatterns = patterns('',
     (r'reimbursement/', 'vouchers.views.select_request_basics', ),
