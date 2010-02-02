@@ -18,6 +18,7 @@ class RequestForm(ModelForm):
             'description',
             'amount',
             'budget_area',
+            'expense_area',
             'check_to_name',
             'check_to_email',
             'check_to_addr',
@@ -69,6 +70,18 @@ class CommitteeBudgetAreasField(ModelChoiceField):
     def label_from_instance(self, obj,):
         return obj.indented_name(strip_levels=self.strip_levels)
 
+class ExpenseAreasField(ModelChoiceField):
+    def __init__(self, *args, **kargs):
+        base_area = vouchers.models.BudgetArea.get_by_path(['Accounts', 'Expenses'])
+        self.strip_levels = base_area.depth
+        areas = base_area.get_descendants()
+        ModelChoiceField.__init__(self, queryset=areas,
+            help_text='In general, this should be a fully indented budget area, not one with children',
+            *args, **kargs)
+
+    def label_from_instance(self, obj,):
+        return obj.indented_name(strip_levels=self.strip_levels)
+
 @user_passes_test(lambda u: u.is_authenticated())
 def submit_request(http_request, term, committee):
     term_obj = get_object_or_404(BudgetTerm, slug=term)
@@ -81,12 +94,14 @@ def submit_request(http_request, term, committee):
     if http_request.method == 'POST': # If the form has been submitted...
         form = RequestForm(http_request.POST, instance=new_request) # A form bound to the POST data
         form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
+        form.fields['expense_area'] = ExpenseAreasField()
         if form.is_valid(): # All validation rules pass
             form.save()
             return HttpResponseRedirect(reverse(review_request, args=[new_request.pk],)) # Redirect after POST
     else:
         form = RequestForm(instance=new_request) # An unbound form
         form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
+        form.fields['expense_area'] = ExpenseAreasField()
 
     context = {
         'term':term_obj,
