@@ -77,7 +77,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'mit.ScriptsRemoteUserMiddleware',
+    'mit.ScriptsRemoteUserBackend',
 )
 
 ROOT_URLCONF = 'remit.urls'
