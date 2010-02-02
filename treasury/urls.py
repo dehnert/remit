@@ -12,7 +12,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
-    (r'^accounts/display_tree', finance_core.views.display_tree),
     (r'^vouchers/', include('vouchers.urls')),
     (r'^finance_core/', include('finance_core.urls')),
 
