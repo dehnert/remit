@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Remit{% endblock %}
+{% block content %}
+
+<h2>Welcome to Remit</h2>
+
+<p>
+Remit is software that aims to help MIT student group manage their finances.
+</p>
+
+<ul>
+    <li><a href="{% url request_reimbursement %}">Request reimbursement</a></li>
+</ul>
+
+{% endblock %}
