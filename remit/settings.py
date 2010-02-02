@@ -73,6 +73,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     #http://docs.djangoproject.com/en/dev/howto/auth-remote-user/
     'django.contrib.auth.middleware.RemoteUserMiddleware',
+    'mit.ScriptsRemoteUserMiddleware',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'mit.ScriptsRemoteUserMiddleware',
 )
 
 ROOT_URLCONF = 'remit.urls'
