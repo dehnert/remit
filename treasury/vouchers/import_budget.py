@@ -4,7 +4,6 @@ import csv
 import subprocess
 import vouchers.models
 import finance_core.models
-from django.db import connection
 from finance_core.models import BudgetArea
 from finance_core.models import coerce_full_email
 from finance_core.models import Transaction
@@ -24,7 +23,7 @@ def build_committees(infile=sys.stdin):
         committees[email_list] = { 'email_list': email_list, 'chair_list': chair_list, 'name': name, 'prefer_chair':prefer_chair, 'area':area, 'account':account}
     return committees
 
-def do_populate_area_structure():
+def do_populate_area_structure(default_addr):
     nodes = [
         [ ('Accounts', 'Root',) ],
         [ ('Assets', 'Assets', ) ],
@@ -47,8 +46,8 @@ def do_populate_area_structure():
                 else:
                     BudgetArea.add_root(name=name, comment=comment,
                         always=True, use_owner=True,
-                        owner='ua-treasurer@mit.edu',
-                        interested='ua-treasurer@mit.edu',
+                        owner=default_addr,
+                        interested=default_addr,
                         account_number=0,
                     )
         # This is sorta evil, in that it abuses the fact that Python
@@ -56,8 +55,8 @@ def do_populate_area_structure():
         parent = BudgetArea.objects.get(name=name, depth=depth)
     return (depth, )
 
-def do_populate_committees(committees):
-    (depth,) = do_populate_area_structure()
+def do_populate_committees(default_addr, committees):
+    (depth,) = do_populate_area_structure(default_addr, )
     core = BudgetArea.objects.get(name='Core', depth=depth)
     comms = BudgetArea.objects.get(name='Committees', depth=depth)
     parents = {
@@ -122,21 +121,8 @@ def do_process_rows(committees, budget, term, depth):
                 term, budget_source, line_item_obj, desc=desc)
 
 
-def main(committees_file, budget_file, term_name, ):
+def main(default_addr, committees_file, budget_file, term_name, ):
     term = vouchers.models.BudgetTerm.objects.get(name=term_name)
     committees = build_committees(committees_file,)
-    (depth, ) = do_populate_committees(committees)
+    (depth, ) = do_populate_committees(default_addr, committees)
     do_process_rows(committees, budget_file, term, depth)
-
-
-def spring_2010():
-    committee_file = open('/mit/ua/officers/treasurer/resources/software/committees.csv')
-    budget_file = open('/mit/ua/officers/treasurer/budgeting/FY10/private/spring-working.csv')
-    term_name = 'Spring 2010'
-    main(committee_file, budget_file, term_name, )
-    print connection.queries
-
-
-if __name__== '__main__':
-    #print "Syntax: %s committee_file format_file budget_file budget_term [override_address]" % (sys.argv[0], )
-    spring_2010()
