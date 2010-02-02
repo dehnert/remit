@@ -4,6 +4,11 @@ from finance_core.models import BudgetArea, BudgetTerm
 
 import datetime
 
+APPROVAL_STATES = (
+    ( 0, 'None'),
+    ( 1, 'Approved'),
+    (-1, 'Rejected'),
+)
 
 class ReimbursementRequest(models.Model):
     submitter = models.CharField(max_length=10) # MIT username of submitter
@@ -16,6 +21,7 @@ class ReimbursementRequest(models.Model):
     expense_area = models.ForeignKey(BudgetArea, related_name='as_expense_area') # ~GL
     request_time = models.DateTimeField(default=datetime.datetime.now)
     approval_time = models.DateTimeField(blank=True, null=True,)
+    approval_status = models.IntegerField(default=0, choices=APPROVAL_STATES)
     printing_time = models.DateTimeField(blank=True, null=True,)
     name = models.CharField(max_length=50, verbose_name='short description', )
     description = models.TextField(blank=True, verbose_name='long description', )
