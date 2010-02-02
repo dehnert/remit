@@ -4,6 +4,7 @@ from vouchers.models import ReimbursementRequest
 
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect
 from django.forms import Form
 from django.forms import ModelForm
@@ -57,7 +58,7 @@ def select_request_basics(http_request, ):
     context = {
         'form':form,
     }
-    return render_to_response('vouchers/select.html', context)
+    return render_to_response('vouchers/select.html', context, context_instance=RequestContext(http_request), )
 
 class CommitteeBudgetAreasField(ModelChoiceField):
     def __init__(self, base_area, *args, **kargs):
@@ -108,7 +109,7 @@ def submit_request(http_request, term, committee):
         'comm':comm_obj,
         'form':form,
     }
-    return render_to_response('vouchers/submit.html', context)
+    return render_to_response('vouchers/submit.html', context, context_instance=RequestContext(http_request), )
 
 @user_passes_test(lambda u: u.is_authenticated())
 def review_request(http_request, object_id):
@@ -123,5 +124,5 @@ def review_request(http_request, object_id):
     context = {
         'rr':request_obj,
     }
-    return render_to_response('vouchers/ReimbursementRequest_review.html', context)
+    return render_to_response('vouchers/ReimbursementRequest_review.html', context, context_instance=RequestContext(http_request), )
 
