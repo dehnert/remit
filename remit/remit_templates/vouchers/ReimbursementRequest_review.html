@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load misc %}
 
 {% block title %}Review reimbursement request for "{{ rr.name }}"{% endblock %}
 {% block content %}
@@ -46,8 +47,8 @@
     <td>{{rr.request_time}}</td>
 </tr>
 <tr>
-    <th>Approval Time</th>
-    <td>{{rr.approval_time}}</td>
+    <th>Approval Status (Time)</th>
+    <td>{{ rr.approval_status|approval_status }} ({{ rr.approval_time }})</td>
 </tr>
 <tr>
     <th>Printing Time</th>
@@ -55,9 +56,19 @@
 </tr>
 </table>
 
-{% if perms.vouchers.can_approve %}
-<form method="post">
-<input type="submit" name="approve" value="Approve" />
+{% if approve_form %}
+<h3>Request Approval</h3>
+{% if approve_message %}
+<p>{{ approve_message }}</p>
+{% endif %}
+<form method="post" action="">
+<table class='pretty-table'>
+{{ approve_form.as_table }}
+
+<tr>
+    <th colspan='2'><input type="submit" name="approve" value="Approve" /></td>
+</tr>
+</table>
 </form>
 {% endif %}
 

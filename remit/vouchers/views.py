@@ -6,10 +6,13 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect
+import django.forms
 from django.forms import Form
 from django.forms import ModelForm
 from django.forms import ModelChoiceField
 from django.core.urlresolvers import reverse
+
+import settings
 
 class RequestForm(ModelForm):
     class Meta:
@@ -126,9 +129,44 @@ def submit_request(http_request, term, committee):
     }
     return render_to_response('vouchers/submit.html', context, context_instance=RequestContext(http_request), )
 
+class VoucherizeForm(Form):
+    name = django.forms.CharField(max_length=100)
+    email = django.forms.EmailField(max_length=100)
+
+
 @user_passes_test(lambda u: u.is_authenticated())
 def review_request(http_request, object_id):
     request_obj = get_object_or_404(ReimbursementRequest, pk=object_id)
+
+    if http_request.user.has_perm('vouchers.can_approve'):
+        # Voucherize form
+        # Prefill from certs / config
+        initial = {}
+        try:
+            name = http_request.META['SSL_CLIENT_S_DN_CN']
+            initial['name'] = name
+        except KeyError:
+            pass
+        if settings.SIGNATORY_EMAIL:
+            initial['email'] = settings.SIGNATORY_EMAIL
+        else:
+            try:
+                initial['email'] = http_request.META['SSL_CLIENT_S_DN_Email']
+            except KeyError:
+                pass
+
+        approve_message = ''
+        if http_request.method == 'POST' and 'approve' in http_request.REQUEST:
+            approve_form = VoucherizeForm(http_request.POST)
+            if approve_form.is_valid():
+                voucher = request_obj.convert(
+                    approve_form.cleaned_data['name'],
+                    signatory_email=approve_form.cleaned_data['email'],)
+                approve_message = 'Created new voucher from request'
+        else:
+            approve_form = VoucherizeForm(initial=initial)
+
+    # Display the content
     if not (http_request.user.has_perm('vouchers.view_requests')
         or http_request.user.username == request_obj.submitter):
         # I'd probably use a 403, but that requires like writing
@@ -139,5 +177,8 @@ def review_request(http_request, object_id):
     context = {
         'rr':request_obj,
     }
+    if http_request.user.has_perm('vouchers.can_approve'):
+        context['approve_form'] = approve_form
+        context['approve_message'] = approve_message
     return render_to_response('vouchers/ReimbursementRequest_review.html', context, context_instance=RequestContext(http_request), )
 

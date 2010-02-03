@@ -30,6 +30,7 @@ class ReimbursementRequest(models.Model):
     class Meta:
         permissions = (
             ('can_list', 'Can list requests',),
+            ('can_approve', 'Can approve requests',),
         )
 
     def __unicode__(self, ):
@@ -42,11 +43,12 @@ class ReimbursementRequest(models.Model):
             self.amount,
         )
 
-    def convert(self, signatory):
+    def convert(self, signatory, signatory_email=settings.SIGNATORY_EMAIL):
         voucher = Voucher()
-        voucher.group_name = settings.group_name
+        voucher.group_name = settings.GROUP_NAME
         voucher.account = self.budget_area.get_account_number()
         voucher.signatory = signatory
+        voucher.signatory_email = signatory_email
         voucher.first_name = self.check_to_first_name
         voucher.last_name = self.check_to_last_name
         voucher.email_address = self.check_to_email
@@ -55,11 +57,15 @@ class ReimbursementRequest(models.Model):
         voucher.description = self.name
         voucher.gl = self.expense_area.get_account_number()
         voucher.save()
+        self.approval_status = 1
+        self.approval_date = datetime.datetime.now()
+        self.save()
 
 class Voucher(models.Model):
     group_name = models.CharField(max_length=10)
     account = models.IntegerField()
     signatory = models.CharField(max_length=50)
+    signatory_email = models.EmailField()
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     email_address = models.EmailField(max_length=50)
