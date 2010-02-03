@@ -16,3 +16,7 @@ table.pretty-table th
 {
     background: #99F;
 }
+ul.errorlist
+{
+    color: red;
+}
