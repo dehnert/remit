@@ -93,6 +93,20 @@ def submit_request(http_request, term, committee):
     new_request.submitter = http_request.user.username
     new_request.budget_term = term_obj
 
+    # Prefill from certs
+    initial = {}
+    try:
+        name = http_request.META['SSL_CLIENT_S_DN_CN']
+        names = name.split(' ')
+        initial['check_to_first_name'] = names[0]
+        initial['check_to_last_name'] = names[-1]
+    except KeyError:
+        pass
+    try:
+        initial['check_to_email'] = http_request.META['SSL_CLIENT_S_DN_Email']
+    except KeyError:
+        pass
+
     if http_request.method == 'POST': # If the form has been submitted...
         form = RequestForm(http_request.POST, instance=new_request) # A form bound to the POST data
         form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
@@ -101,7 +115,7 @@ def submit_request(http_request, term, committee):
             form.save()
             return HttpResponseRedirect(reverse(review_request, args=[new_request.pk],)) # Redirect after POST
     else:
-        form = RequestForm(instance=new_request) # An unbound form
+        form = RequestForm(instance=new_request, initial=initial, ) # An unbound form
         form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
         form.fields['expense_area'] = ExpenseAreasField()
 
