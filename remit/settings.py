@@ -13,6 +13,7 @@ ADMINS = (
     ('Remit team', 'remit@mit.edu'),
 )
 SERVER_EMAIL = 'remit@mit.edu'
+USE_CERTS = True
 
 GROUP_NAME = 'Remit'
 SIGNATORY_EMAIL = None
@@ -75,13 +76,18 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     #http://docs.djangoproject.com/en/dev/howto/auth-remote-user/
-    'django.contrib.auth.middleware.RemoteUserMiddleware',
+    #'django.contrib.auth.middleware.RemoteUserMiddleware',
     'mit.ScriptsRemoteUserMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'mit.ScriptsRemoteUserBackend',
-)
+if USE_CERTS:
+    AUTHENTICATION_BACKENDS = (
+        'mit.ScriptsRemoteUserBackend',
+    )
+else:
+    AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
 
 ROOT_URLCONF = 'remit.urls'
 
