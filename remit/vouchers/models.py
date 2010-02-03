@@ -42,6 +42,19 @@ class ReimbursementRequest(models.Model):
             self.amount,
         )
 
+    def convert(self, signatory):
+        voucher = Voucher()
+        voucher.group_name = settings.group_name
+        voucher.account = self.budget_area.get_account_number()
+        voucher.signatory = signatory
+        voucher.first_name = self.check_to_first_name
+        voucher.last_name = self.check_to_last_name
+        voucher.email_address = self.check_to_email
+        voucher.mailing_address = self.check_to_addr
+        voucher.amount = self.amount
+        voucher.description = self.name
+        voucher.gl = self.expense_area.get_account_number()
+        voucher.save()
 
 class Voucher(models.Model):
     group_name = models.CharField(max_length=10)

@@ -55,4 +55,10 @@
 </tr>
 </table>
 
+{% if perms.vouchers.can_approve %}
+<form method="post">
+<input type="submit" name="approve" value="Approve" />
+</form>
+{% endif %}
+
 {% endblock %}

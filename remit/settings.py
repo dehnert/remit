@@ -14,6 +14,9 @@ ADMINS = (
 )
 SERVER_EMAIL = 'remit@mit.edu'
 
+GROUP_NAME = 'Remit'
+SIGNATORY_EMAIL = None
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
