@@ -12,7 +12,8 @@ APPROVAL_STATES = (
 
 class ReimbursementRequest(models.Model):
     submitter = models.CharField(max_length=10) # MIT username of submitter
-    check_to_name = models.CharField(max_length=50, verbose_name="check recipient's name")
+    check_to_first_name = models.CharField(max_length=50, verbose_name="check recipient's first name")
+    check_to_last_name = models.CharField(max_length=50, verbose_name="check recipient's last name")
     check_to_email = models.EmailField(verbose_name="email address for check pickup")
     check_to_addr = models.TextField(blank=True, verbose_name="address for check mailing", help_text="For most requests, this should be blank for pickup in SAO (W20-549)")
     amount = models.DecimalField(max_digits=7, decimal_places=2, help_text='Do not include "$"')
@@ -27,14 +28,13 @@ class ReimbursementRequest(models.Model):
     description = models.TextField(blank=True, verbose_name='long description', )
 
     def __unicode__(self, ):
-        return "%s: %s (%s) (by %s) for $%s in %s during %s" % (
+        return "%s: %s %s (%s) (by %s) for $%s" % (
             self.name,
-            self.check_to_name,
+            self.check_to_first_name,
+            self.check_to_last_name,
             self.check_to_email,
             self.submitter,
             self.amount,
-            self.budget_area.name,
-            self.budget_term.name,
         )
 
 

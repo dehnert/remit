@@ -20,7 +20,8 @@ class RequestForm(ModelForm):
             'amount',
             'budget_area',
             'expense_area',
-            'check_to_name',
+            'check_to_first_name',
+            'check_to_last_name',
             'check_to_email',
             'check_to_addr',
         )

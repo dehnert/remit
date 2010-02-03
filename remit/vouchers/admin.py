@@ -17,9 +17,9 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Expense details', {'fields': ['name', 'description', 'amount', 'budget_area', 'budget_term', ] }),
         ('Request metadata', {'fields': ['submitter', 'request_time', 'approval_time', 'approval_status', 'printing_time', ]}),
-        ('Recipient', {'fields': ['check_to_name', 'check_to_email', 'check_to_addr', ] }),
+        ('Recipient', {'fields': ['check_to_first_name', 'check_to_last_name', 'check_to_email', 'check_to_addr', ] }),
     ]
-    list_display = ('name', 'submitter', 'check_to_name', 'amount', 'budget_area', 'budget_term', )
+    list_display = ('name', 'submitter', 'check_to_first_name', 'check_to_last_name', 'amount', 'budget_area', 'budget_term', )
 
 
 admin.site.register(vouchers.models.ReimbursementRequest, ReimbursementRequestAdmin)
