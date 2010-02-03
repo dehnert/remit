@@ -6,10 +6,9 @@
 <h2>Reimbursement Request: Step 2: Details</h2>
 
 <form method="post" action="">
-<table>
+<table class='pretty-table'>
 <tr class='sect-head'>
-    <td></td>
-    <th>You are requesting a reimbursement from:</th>
+    <th colspan='2'>You are requesting a reimbursement from:</th>
 </tr>
 <tr>
     <th>Term</th>
@@ -21,11 +20,10 @@
 </tr>
 
 <tr class='sect-head'>
-    <td></td>
-    <th>Request details:</th>
+    <th colspan='2'>Request details:</th>
 </tr>
 {{ form.as_table }}
-<tr><td></td><td><input type='submit' value='Request Reimbursement' /></td></tr>
+<tr><th colspan='2'><input type='submit' value='Request Reimbursement' /></th></tr>
 </table>
 </form>
 
