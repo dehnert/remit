@@ -69,10 +69,10 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
         path = path.split('.')
         return cls.get_by_path(path)
 
-    def pathstr(self):
-        parent = self.get_parent()
-        if parent:
-            prefix = parent.pathstr() + '.'
+    def pathstr(self, skip=0):
+        if self.depth-1 > skip:
+            parent = self.get_parent()
+            prefix = parent.pathstr(skip=skip) + '.'
         else:
             prefix = ''
         return prefix + self.name

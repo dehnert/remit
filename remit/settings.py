@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'treebeard',
     'vouchers',
     'finance_core',
+    'util',
 )
 
 from local_settings_after import *

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load misc %}
+
+{% block title %}List reimbursement requests{% endblock %}
+{% block content %}
+
+<h2>List Reimbursement Requests</h2>
+
+<table class='pretty-table'>
+<tr>
+    <th>#</th>
+    <th>Name</th>
+    <th>Amount</th>
+    <th>Check to</th>
+    <th>Accounts</th>
+    <th>Approval state (date)</th>
+</tr>
+
+{% for object in object_list %}
+<tr>
+    <td><a href='{% url review_request object.pk %}'>{{ object.pk }}</a></td>
+    <td><a href='{% url review_request object.pk %}'>{{ object.name }}</a></td>
+    <td>${{ object.amount }}</td>
+    <td>
+        {{ object.check_to_first_name }} {{ object.check_to_last_name }}<br />
+        {{ object.check_to_email }}<br />
+        (Submitter {{ object.submitter }})
+    </td>
+    <td>
+        Term: {{ object.budget_term }}<br />
+        Budget: {{ object.budget_area|budgetarea_pathstr:3 }}<br />
+        GL: {{ object.expense_area|budgetarea_pathstr:2 }}
+    </td>
+    <td>
+        {{ object.approval_status|approval_status }} ({{ object.approval_time }})
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

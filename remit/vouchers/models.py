@@ -5,7 +5,7 @@ from finance_core.models import BudgetArea, BudgetTerm
 import datetime
 
 APPROVAL_STATES = (
-    ( 0, 'None'),
+    ( 0, 'Pending'),
     ( 1, 'Approved'),
     (-1, 'Rejected'),
 )
@@ -26,6 +26,11 @@ class ReimbursementRequest(models.Model):
     printing_time = models.DateTimeField(blank=True, null=True,)
     name = models.CharField(max_length=50, verbose_name='short description', )
     description = models.TextField(blank=True, verbose_name='long description', )
+
+    class Meta:
+        permissions = (
+            ('can_list', 'Can list requests',),
+        )
 
     def __unicode__(self, ):
         return "%s: %s %s (%s) (by %s) for $%s" % (
