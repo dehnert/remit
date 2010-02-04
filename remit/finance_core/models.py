@@ -163,7 +163,7 @@ def make_transfer(name, amount,
 class LineItem(models.Model):
     tx = models.ForeignKey(Transaction)
     amount = models.DecimalField(max_digits=7, decimal_places=2, help_text='Do not include "$"')
-    label = models.CharField(max_length=40)
+    label = models.CharField(max_length=60)
     budget_area = models.ForeignKey(BudgetArea)
     budget_term = models.ForeignKey(BudgetTerm)
     layer = models.IntegerField() # this might actually be a Transaction property...
