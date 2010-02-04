@@ -58,7 +58,7 @@ class ReimbursementRequest(models.Model):
         voucher.gl = self.expense_area.get_account_number()
         voucher.save()
         self.approval_status = 1
-        self.approval_date = datetime.datetime.now()
+        self.approval_time = datetime.datetime.now()
         self.save()
 
 class Voucher(models.Model):
