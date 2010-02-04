@@ -6,7 +6,10 @@ import vouchers.models
 
 urlpatterns = patterns('',
     url(r'list/', permission_required('vouchers.can_list')(object_list),
-        kwargs={'queryset': vouchers.models.ReimbursementRequest.objects.all()},
+        kwargs={
+            'queryset': vouchers.models.ReimbursementRequest.objects.all(),
+            'extra_context':{'pagename':'list_requests'},
+        },
         name='list_requests',
     ),
     url(r'reimbursement/', 'vouchers.views.select_request_basics', name='request_reimbursement', ),

@@ -9,6 +9,15 @@
 
   </head>
   <body>
+    <ul class='tab-navigation'>
+        <li{% ifequal pagename "homepage" %} class='selected'{% endifequal %}><a href="{% url homepage %}">Home</a></li>
+        <li{% ifequal pagename "request_reimbursement" %} class='selected'{% endifequal %}><a href="{% url request_reimbursement %}">Request reimbursement</a></li>
+        {% if perms.vouchers.can_list %}
+        <li{% ifequal pagename "list_requests" %} class='selected'{% endifequal %}><a href="{% url list_requests %}">List requests</a></li>
+        {% endif %}
+    </ul>
+    <div id='content'>
 {% block content %}{% endblock %}
+    </div>
   </body>
 </html>

@@ -12,7 +12,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
-    (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'index.html'}),
+    (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'index.html', 'extra_context': { 'pagename':'homepage' }, }, 'homepage'),
     (r'^vouchers/', include('vouchers.urls')),
     (r'^finance_core/', include('finance_core.urls')),
 

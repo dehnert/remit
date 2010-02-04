@@ -61,6 +61,7 @@ def select_request_basics(http_request, ):
 
     context = {
         'form':form,
+        'pagename':'request_reimbursement',
     }
     return render_to_response('vouchers/select.html', context, context_instance=RequestContext(http_request), )
 
@@ -126,6 +127,7 @@ def submit_request(http_request, term, committee):
         'term':term_obj,
         'comm':comm_obj,
         'form':form,
+        'pagename':'request_reimbursement',
     }
     return render_to_response('vouchers/submit.html', context, context_instance=RequestContext(http_request), )
 
@@ -178,6 +180,7 @@ def review_request(http_request, object_id):
         raise Http404
     context = {
         'rr':request_obj,
+        'pagename':'request_reimbursement',
     }
     if show_approve:
         context['approve_form'] = approve_form
