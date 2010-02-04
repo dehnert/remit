@@ -13,7 +13,6 @@ ADMINS = (
     ('Remit team', 'remit@mit.edu'),
 )
 SERVER_EMAIL = 'remit@mit.edu'
-USE_CERTS = True
 
 GROUP_NAME = 'Remit'
 SIGNATORY_EMAIL = None
@@ -80,14 +79,10 @@ MIDDLEWARE_CLASSES = (
     'mit.ScriptsRemoteUserMiddleware',
 )
 
-if USE_CERTS:
-    AUTHENTICATION_BACKENDS = (
-        'mit.ScriptsRemoteUserBackend',
-    )
-else:
-    AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
-    )
+AUTHENTICATION_BACKENDS = (
+    'mit.ScriptsRemoteUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 ROOT_URLCONF = 'remit.urls'
 
