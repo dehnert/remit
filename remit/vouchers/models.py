@@ -4,10 +4,13 @@ from finance_core.models import BudgetArea, BudgetTerm
 
 import datetime
 
+APPROVAL_STATE_PENDING = 0
+APPROVAL_STATE_APPROVED = 1
+APPROVAL_STATE_REJECTED = -1
 APPROVAL_STATES = (
-    ( 0, 'Pending'),
-    ( 1, 'Approved'),
-    (-1, 'Rejected'),
+    (APPROVAL_STATE_PENDING,  'Pending'),
+    (APPROVAL_STATE_APPROVED, 'Approved'),
+    (APPROVAL_STATE_REJECTED, 'Rejected'),
 )
 
 class ReimbursementRequest(models.Model):

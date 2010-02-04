@@ -60,7 +60,7 @@
 <h3>Request Approval</h3>
 {% if approve_message %}
 <p>{{ approve_message }}</p>
-{% endif %}
+{% else %}
 <form method="post" action="">
 <table class='pretty-table'>
 {{ approve_form.as_table }}
@@ -70,6 +70,7 @@
 </tr>
 </table>
 </form>
+{% endif %}
 {% endif %}
 
 {% endblock %}

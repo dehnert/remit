@@ -1,6 +1,6 @@
 import vouchers.models
-from finance_core.models import BudgetTerm, BudgetArea
 from vouchers.models import ReimbursementRequest
+from finance_core.models import BudgetTerm, BudgetArea
 
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render_to_response, get_object_or_404
@@ -138,7 +138,9 @@ class VoucherizeForm(Form):
 def review_request(http_request, object_id):
     request_obj = get_object_or_404(ReimbursementRequest, pk=object_id)
 
-    if http_request.user.has_perm('vouchers.can_approve'):
+    show_approve = (http_request.user.has_perm('vouchers.can_approve')
+        and request_obj.approval_status == vouchers.models.APPROVAL_STATE_PENDING)
+    if show_approve:
         # Voucherize form
         # Prefill from certs / config
         initial = {}
@@ -177,7 +179,7 @@ def review_request(http_request, object_id):
     context = {
         'rr':request_obj,
     }
-    if http_request.user.has_perm('vouchers.can_approve'):
+    if show_approve:
         context['approve_form'] = approve_form
         context['approve_message'] = approve_message
     return render_to_response('vouchers/ReimbursementRequest_review.html', context, context_instance=RequestContext(http_request), )
