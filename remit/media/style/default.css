@@ -37,6 +37,8 @@ ul.tab-navigation li
 ul.tab-navigation li.selected
 {
     background: #99f;
+    position: relative;
+    z-index: 10;
 }
 
 /* Reset some stuff */
