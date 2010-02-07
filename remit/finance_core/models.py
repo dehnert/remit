@@ -178,11 +178,15 @@ class LineItem(models.Model):
             self.budget_area, self.budget_term, )
 
 
+LAYER_BUDGET      = 10
+LAYER_ALLOCATION  = 20
+LAYER_EXPENDITURE = 30
+LAYER_CLOSEOUT    = 40
 layers=(
-    (10, 'budget'),
-    (20, 'allocation'),
-    (30, 'expenditure'),
-    (40, 'closeout'),
+    (LAYER_BUDGET,      'budget'),
+    (LAYER_ALLOCATION,  'allocation'),
+    (LAYER_EXPENDITURE, 'expenditure'),
+    (LAYER_CLOSEOUT,    'closeout'),
 )
 def get_layer_by_name(name):
     for layer in layers:

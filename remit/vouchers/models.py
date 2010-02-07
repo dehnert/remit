@@ -1,5 +1,6 @@
 from django.db import models
 import settings
+import finance_core
 from finance_core.models import BudgetArea, BudgetTerm
 
 import datetime
@@ -60,6 +61,15 @@ class ReimbursementRequest(models.Model):
         voucher.description = self.name
         voucher.gl = self.expense_area.get_account_number()
         voucher.save()
+        finance_core.models.make_transfer(
+            self.name,
+            self.amount,
+            finance_core.models.LAYER_EXPENDITURE,
+            self.budget_term,
+            self.budget_area,
+            self.expense_area,
+            self.description,
+        )
         self.approval_status = 1
         self.approval_time = datetime.datetime.now()
         self.save()
