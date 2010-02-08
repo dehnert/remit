@@ -187,3 +187,30 @@ def review_request(http_request, object_id):
         context['approve_message'] = approve_message
     return render_to_response('vouchers/ReimbursementRequest_review.html', context, context_instance=RequestContext(http_request), )
 
+def generate_vouchers(http_request, *args):
+    unprocessed = True
+    if 'unprocessed' in http_request.REQUEST:
+        if http_request.REQUEST['unprocessed'].upper() == 'TRUE':
+            unprocessed = True
+        else:
+            unprocessed = False
+    mark = True
+    if 'mark' in http_request.REQUEST:
+        if http_request.REQUEST['mark'].upper() == 'TRUE':
+            mark = True
+        else:
+            mark = False
+
+    lst = vouchers.models.Voucher.objects.all()
+    if unprocessed:
+        lst = lst.filter(processed=False)
+
+    context = {'vouchers': lst }
+    response = render_to_response('vouchers/vouchers.tex', context, context_instance=RequestContext(http_request), )
+
+    if mark:
+        for voucher in lst:
+            voucher.processed = True
+            voucher.save()
+
+    return response

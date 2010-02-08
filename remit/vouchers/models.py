@@ -86,3 +86,14 @@ class Voucher(models.Model):
     amount = models.DecimalField(max_digits=7, decimal_places=2,)
     description = models.TextField()
     gl = models.IntegerField()
+    processed = models.BooleanField()
+
+    def mailing_addr_lines(self):
+        import re
+        if self.mailing_address:
+            lst = re.split(re.compile('[\n\r]*'), self.mailing_address)
+            lst = filter(lambda elem: len(elem)>0, lst)
+        else:
+            lst = []
+        lst = lst + ['']*(3-len(lst))
+        return lst

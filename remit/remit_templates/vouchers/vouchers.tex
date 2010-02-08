@@ -1,0 +1,41 @@
+{% load latex %}
+{% autoescape off %}
+\documentclass{mitvoucher}
+
+\signatoryemail{esp-treasurer@mit.edu}
+
+\begin{document}
+
+\begin{tabular}{r|l|l|r|p{2in}}
+Account & Name & Email & Amount & Description \\
+{% for f in vouchers %}
+{{f.account|texescape}} &
+{{f.first_name|texescape}} {{f.last_name|texescape}} & 
+{{f.email_address|texescape}} &
+{{f.amount|texescape}} &
+{{f.description}} \\
+{% endfor %}
+\end{tabular}
+
+{% for f in vouchers %}
+\begin{voucher}
+\groupname{ {{f.group_name|texescape}} }
+\costobject{ {{f.account|texescape}} }
+\signatory{ {{f.signatory|texescape}} }
+\bycheck{}
+\payablefirst{ {{f.first_name|texescape}} }
+\payablelast{ {{f.last_name|texescape}} }
+\email{ {{f.email_address|texescape}} }
+{% if f.mailing_addr_lines.0 %}\mailone{ {{f.mailing_addr_lines.0|texescape}} }
+{% endif %}{% if f.mailing_addr_lines.1 %}\mailtwo{ {{f.mailing_addr_lines.1|texescape}} }
+{% endif %}{% if f.mailing_addr_lines.2 %}\mailthree{ {{f.mailing_addr_lines.2|texescape}} }
+{% endif %}\amt{\${{f.amount|texescape}} }
+\desc{
+{{f.description|texescape}}
+}
+\gl{ {{f.gl|texescape}} }
+\end{voucher}
+{% endfor %}
+
+\end{document}
+{% endautoescape %}
