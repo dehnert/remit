@@ -6,6 +6,8 @@
 
 \begin{document}
 
+\section{Summary Table}
+
 \begin{tabular}{r|l|l|r|p{2in}}
 Account & Name & Email & Amount & Description \\
 {% for f in vouchers %}
@@ -16,6 +18,10 @@ Account & Name & Email & Amount & Description \\
 {{f.description}} \\
 {% endfor %}
 \end{tabular}
+
+The following pages contain the vouchers themselves.
+
+\clearpage
 
 {% for f in vouchers %}
 \begin{voucher}
