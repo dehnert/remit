@@ -231,6 +231,23 @@ def generate_vouchers(http_request, *args):
     context = {'vouchers': lst }
     response = render_to_response('vouchers/vouchers.tex', context, context_instance=RequestContext(http_request), )
 
+    # Send mail
+    tmpl = get_template('vouchers/vouchers_tex_email.txt')
+    ctx = Context({
+        'converter': http_request.user,
+        'vouchers': lst,
+        'mark': mark,
+        'unprocessed': unprocessed,
+    })
+    body = tmpl.render(ctx)
+    mail_admins(
+        'Voucher rendering: %d by %s' % (
+            len(lst),
+            http_request.user,
+        ),
+        body,
+    )
+
     if mark:
         for voucher in lst:
             voucher.processed = True

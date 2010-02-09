@@ -1,0 +1,21 @@
+{% load misc %}
+Dear admins,
+
+User '{{converter}}' ({{converter.first_name}} {{converter.last_name}} --- {{converter.email}}) just converted vouchers to LaTeX.
+
+Number of vouchers: {{vouchers|length}}
+Mark:               {{mark}}
+Unprocessed only:   {{unprocessed}}
+
+{% for f in vouchers %}
+Voucher {{f.pk}}
+Account:     {{f.account}}
+GL:          {{f.gl}}
+Amount:      {{f.amount}}
+Name:        {{f.first_name}} {{f.last_name}}
+Email:       {{f.email_address}}
+Description: {{f.description}}
+{% endfor %}
+
+Thanks,
+Remit
