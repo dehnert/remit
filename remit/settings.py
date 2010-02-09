@@ -15,6 +15,7 @@ ADMINS = (
 SERVER_EMAIL = 'remit@mit.edu'
 
 GROUP_NAME = 'Remit'
+GROUP_ABBR = 'RM'
 SIGNATORY_EMAIL = None
 
 MANAGERS = ADMINS

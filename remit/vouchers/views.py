@@ -117,7 +117,7 @@ def submit_request(http_request, term, committee):
         form.fields['expense_area'] = ExpenseAreasField()
         if form.is_valid(): # All validation rules pass
             form.save()
-            return HttpResponseRedirect(reverse(review_request, args=[new_request.pk],)) # Redirect after POST
+            return HttpResponseRedirect(reverse(review_request, args=[new_request.pk],) + '?new=true') # Redirect after POST
     else:
         form = RequestForm(instance=new_request, initial=initial, ) # An unbound form
         form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
@@ -139,6 +139,12 @@ class VoucherizeForm(Form):
 @user_passes_test(lambda u: u.is_authenticated())
 def review_request(http_request, object_id):
     request_obj = get_object_or_404(ReimbursementRequest, pk=object_id)
+    new = False
+    if 'new' in http_request.REQUEST:
+        if http_request.REQUEST['new'].upper() == 'TRUE':
+            new = True
+        else:
+            new = False
 
     show_approve = (http_request.user.has_perm('vouchers.can_approve')
         and request_obj.approval_status == vouchers.models.APPROVAL_STATE_PENDING)
@@ -181,6 +187,7 @@ def review_request(http_request, object_id):
     context = {
         'rr':request_obj,
         'pagename':'request_reimbursement',
+        'new': new,
     }
     if show_approve:
         context['approve_form'] = approve_form

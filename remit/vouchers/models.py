@@ -58,7 +58,7 @@ class ReimbursementRequest(models.Model):
         voucher.email_address = self.check_to_email
         voucher.mailing_address = self.check_to_addr
         voucher.amount = self.amount
-        voucher.description = self.name
+        voucher.description = self.label() + ': ' + self.name
         voucher.gl = self.expense_area.get_account_number()
         voucher.save()
         finance_core.models.make_transfer(
@@ -73,6 +73,9 @@ class ReimbursementRequest(models.Model):
         self.approval_status = 1
         self.approval_time = datetime.datetime.now()
         self.save()
+
+    def label(self, ):
+        return settings.GROUP_ABBR + unicode(self.pk) + 'RR'
 
 class Voucher(models.Model):
     group_name = models.CharField(max_length=10)

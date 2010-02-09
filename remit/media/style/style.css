@@ -20,3 +20,47 @@ ul.errorlist
 {
     color: red;
 }
+
+div.messagebox
+{
+    padding: 0 10px 10px 10px;
+    margin: 2em 0;
+    border: 1px solid;
+    width: 50%;
+}
+div.messagebox > h3
+{
+    margin: 0 -10px;
+    padding: 2px 10px;
+    margin-bottom: 1em;
+}
+
+div.infobox
+{
+    background-color: #afa;
+    border-color: #0f0;
+}
+
+div.infobox h3 {
+    background: #6f6;
+}
+
+div.warnbox
+{
+    background-color: #ffdf60;
+    border-color: #ffbf00;
+}
+
+div.warnbox h3 {
+    background: #faba00;
+}
+
+div.errorbox
+{
+    background-color: #faa;
+    border-color: red;
+}
+
+div.errorbox h3 {
+    background: #f88;
+}
