@@ -132,8 +132,8 @@ def submit_request(http_request, term, committee):
     return render_to_response('vouchers/submit.html', context, context_instance=RequestContext(http_request), )
 
 class VoucherizeForm(Form):
-    name = django.forms.CharField(max_length=100)
-    email = django.forms.EmailField(max_length=100)
+    name = django.forms.CharField(max_length=100, help_text='Signatory name for voucher',)
+    email = django.forms.EmailField(max_length=100, help_text='Signatory email for voucher')
 
 
 @user_passes_test(lambda u: u.is_authenticated())
