@@ -11,6 +11,9 @@ from django.forms import Form
 from django.forms import ModelForm
 from django.forms import ModelChoiceField
 from django.core.urlresolvers import reverse
+from django.core.mail import mail_admins
+from django.template import Context, Template
+from django.template.loader import get_template
 
 import settings
 
@@ -172,6 +175,19 @@ def review_request(http_request, object_id):
                 voucher = request_obj.convert(
                     approve_form.cleaned_data['name'],
                     signatory_email=approve_form.cleaned_data['email'],)
+                tmpl = get_template('vouchers/request_approval_email.txt')
+                ctx = Context({
+                    'approver': http_request.user,
+                    'request': request_obj,
+                })
+                body = tmpl.render(ctx)
+                mail_admins(
+                    'Request approval: %s approved $%s' % (
+                        http_request.user,
+                        request_obj.amount,
+                    ),
+                    body,
+                )
                 approve_message = 'Created new voucher from request'
         else:
             approve_form = VoucherizeForm(initial=initial)

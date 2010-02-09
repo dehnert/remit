@@ -1,0 +1,24 @@
+{% load misc %}
+Dear admins,
+
+User '{{approver}}' ({{approver.first_name}} {{approver.last_name}} --- {{approver.email}}) just approved a request.
+
+Request ID:         {{request.label}}
+Short description:  {{request.name}}
+Long description:   {{request.description}}
+Amount:             ${{request.amount}}
+Term:               {{request.budget_term}}
+Budget area:        {{request.budget_area.pathstr}}
+Expense area:       {{request.expense_area.pathstr}}
+Submitter:          {{request.submitter}}
+Check recipient:    {{request.check_to_first_name}} {{ request.check_to_last_name }} (email: {{request.check_to_email}})
+Request Time:       {{request.request_time}}
+Printing Time:      {{request.printing_time}}
+Approval Status:    {{ request.approval_status|approval_status }}
+Approval Time:      {{ request.approval_time }}
+
+Check Address:
+{{request.check_to_addr}}
+
+Thanks,
+Remit
