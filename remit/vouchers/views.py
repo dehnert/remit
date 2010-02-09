@@ -210,6 +210,7 @@ def review_request(http_request, object_id):
         context['approve_message'] = approve_message
     return render_to_response('vouchers/ReimbursementRequest_review.html', context, context_instance=RequestContext(http_request), )
 
+@user_passes_test(lambda u: u.has_perm('vouchers.generate_vouchers'))
 def generate_vouchers(http_request, *args):
     unprocessed = True
     if 'unprocessed' in http_request.REQUEST:

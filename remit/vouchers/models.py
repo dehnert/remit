@@ -100,3 +100,9 @@ class Voucher(models.Model):
             lst = []
         lst = lst + ['']*(3-len(lst))
         return lst
+
+    class Meta:
+        permissions = (
+            ('generate_vouchers', 'Can generate vouchers',),
+        )
+
