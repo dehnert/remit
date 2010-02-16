@@ -11,7 +11,7 @@ from django.forms import Form
 from django.forms import ModelForm
 from django.forms import ModelChoiceField
 from django.core.urlresolvers import reverse
-from django.core.mail import mail_admins
+from django.core.mail import send_mail, mail_admins
 from django.template import Context, Template
 from django.template.loader import get_template
 
@@ -119,7 +119,29 @@ def submit_request(http_request, term, committee):
         form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
         form.fields['expense_area'] = ExpenseAreasField()
         if form.is_valid(): # All validation rules pass
-            form.save()
+            request_obj = form.save()
+
+            # Send email
+            tmpl = get_template('vouchers/request_submit_email.txt')
+            ctx = Context({
+                'submitter': http_request.user,
+                'request': request_obj,
+            })
+            body = tmpl.render(ctx)
+            recipients = []
+            for name, addr in settings.ADMINS:
+                recipients.append(addr)
+            recipients.append(request_obj.budget_area.owner_address())
+            send_mail(
+                'Request submittal: %s requested $%s' % (
+                    http_request.user,
+                    request_obj.amount,
+                ),
+                body,
+                settings.SERVER_EMAIL,
+                recipients,
+            )
+
             return HttpResponseRedirect(reverse(review_request, args=[new_request.pk],) + '?new=true') # Redirect after POST
     else:
         form = RequestForm(instance=new_request, initial=initial, ) # An unbound form

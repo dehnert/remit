@@ -25,7 +25,10 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
             address = self.owner or self.interested
         else:
             address = self.interested or self.owner
-        return address or self.get_parent().contact_address()
+
+    def owner_address(self,):
+        address = self.owner
+        return address or self.get_parent().owner_address()
 
     def get_account_number(self):
         """Retrieve the account number for this account.
