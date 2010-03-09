@@ -14,3 +14,10 @@ def approval_status(value):
     for num, name in APPROVAL_STATES:
         if num == value: return name
     else: return value
+
+@register.filter
+def approval_status_class(value):
+    from vouchers.models import APPROVAL_STATES
+    for num, name in APPROVAL_STATES:
+        if num == value: return name.lower()
+    else: return value

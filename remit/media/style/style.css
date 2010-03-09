@@ -64,3 +64,16 @@ div.errorbox
 div.errorbox h3 {
     background: #f88;
 }
+
+.request-status-approved
+{
+    background: #6F6;
+}
+.request-status-pending
+{
+    background: #FABA00;
+}
+.request-status-rejected
+{
+    background: #F88;
+}

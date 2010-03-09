@@ -23,7 +23,7 @@
     <td>${{ object.amount }}</td>
     <td>
         {{ object.check_to_first_name }} {{ object.check_to_last_name }}<br />
-        {{ object.check_to_email }}<br />
+        <a href='mailto:{{ object.check_to_email }}'>{{ object.check_to_email }}</a><br />
         (Submitter {{ object.submitter }})
     </td>
     <td>
@@ -31,7 +31,7 @@
         Budget: {{ object.budget_area|budgetarea_pathstr:3 }}<br />
         GL: {{ object.expense_area|budgetarea_pathstr:2 }}
     </td>
-    <td>
+    <td class='request-status-{{ object.approval_status|approval_status_class}}'>
         {{ object.approval_status|approval_status }} ({{ object.approval_time }})
     </td>
 </tr>
