@@ -133,7 +133,8 @@ def submit_request(http_request, term, committee):
                 recipients.append(addr)
             recipients.append(request_obj.budget_area.owner_address())
             send_mail(
-                'Request submittal: %s requested $%s' % (
+                '%sRequest submittal: %s requested $%s' % (
+                    settings.EMAIL_SUBJECT_PREFIX,
                     http_request.user,
                     request_obj.amount,
                 ),
