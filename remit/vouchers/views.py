@@ -100,19 +100,11 @@ def submit_request(http_request, term, committee):
     new_request.submitter = http_request.user.username
     new_request.budget_term = term_obj
 
-    # Prefill from certs
+    # Prefill from user information (itself prefilled from LDAP now)
     initial = {}
-    try:
-        name = http_request.META['SSL_CLIENT_S_DN_CN']
-        names = name.split(' ')
-        initial['check_to_first_name'] = names[0]
-        initial['check_to_last_name'] = names[-1]
-    except KeyError:
-        pass
-    try:
-        initial['check_to_email'] = http_request.META['SSL_CLIENT_S_DN_Email']
-    except KeyError:
-        pass
+    initial['check_to_first_name'] = http_request.user.first_name
+    initial['check_to_last_name']  = http_request.user.last_name
+    initial['check_to_email']      = http_request.user.email
 
     if http_request.method == 'POST': # If the form has been submitted...
         form = RequestForm(http_request.POST, instance=new_request) # A form bound to the POST data
@@ -194,18 +186,11 @@ def review_request(http_request, object_id):
         # Voucherize form
         # Prefill from certs / config
         initial = {}
-        try:
-            name = http_request.META['SSL_CLIENT_S_DN_CN']
-            initial['name'] = name
-        except KeyError:
-            pass
+        initial['name'] = '%s %s' % (http_request.user.first_name, http_request.user.last_name, )
         if settings.SIGNATORY_EMAIL:
             initial['email'] = settings.SIGNATORY_EMAIL
         else:
-            try:
-                initial['email'] = http_request.META['SSL_CLIENT_S_DN_Email']
-            except KeyError:
-                pass
+            initial['email'] = http_request.user.email
 
         approve_message = ''
         if http_request.method == 'POST' and 'approve' in http_request.REQUEST:
