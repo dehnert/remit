@@ -108,6 +108,6 @@ INSTALLED_APPS = (
     'util',
 )
 
-EMAIL_SUBJECT_PREFIX = "[Remit %s] " % (GROUP_ABBR,)
+EMAIL_SUBJECT_PREFIX = "[Remit: %s] " % (GROUP_ABBR,)
 
 from local_settings_after import *
