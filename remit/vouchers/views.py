@@ -122,7 +122,7 @@ def submit_request(http_request, term, committee):
             request_obj = form.save()
 
             # Send email
-            tmpl = get_template('vouchers/request_submit_email.txt')
+            tmpl = get_template('vouchers/emails/request_submit_admin.txt')
             ctx = Context({
                 'submitter': http_request.user,
                 'request': request_obj,
@@ -197,7 +197,7 @@ def review_request(http_request, object_id):
                 voucher = request_obj.convert(
                     approve_form.cleaned_data['name'],
                     signatory_email=approve_form.cleaned_data['email'],)
-                tmpl = get_template('vouchers/request_approval_email.txt')
+                tmpl = get_template('vouchers/emails/request_approval_admin.txt')
                 ctx = Context({
                     'approver': http_request.user,
                     'request': request_obj,
@@ -255,7 +255,7 @@ def generate_vouchers(http_request, *args):
     response = render_to_response('vouchers/vouchers.tex', context, context_instance=RequestContext(http_request), )
 
     # Send mail
-    tmpl = get_template('vouchers/vouchers_tex_email.txt')
+    tmpl = get_template('vouchers/emails/vouchers_tex.txt')
     ctx = Context({
         'converter': http_request.user,
         'vouchers': lst,
