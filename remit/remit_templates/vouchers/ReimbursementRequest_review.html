@@ -71,6 +71,22 @@
 {% include "vouchers/reimbursementrequest_instructions.fragment.html" %}
 {% endif %}
 
+{% if email_options %}
+<h3>Send stock emails</h3>
+{% if email_message %}
+<p>{{ email_message }}</p>
+{% endif %}
+
+<ul>
+{% for option in email_options %}
+<form method="post" action="">
+<input type='submit' name='send_email'  value='{{option.label}}'>
+<input type='hidden' name='email_name' value='{{option.name}}'>
+</form>
+{% endfor %}
+</ul>
+{% endif %}
+
 {% if approve_form %}
 <h3>Approve this reimbursement request:</h3>
 {% if approve_message %}

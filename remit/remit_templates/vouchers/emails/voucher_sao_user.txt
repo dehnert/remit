@@ -1,0 +1,13 @@
+Hi {{request.check_to_first_name}} {{ request.check_to_last_name }},
+   Your reimbursement request has been delivered to SAO for processing. You should be notified that your check is ready for pickup (or has been mailed) in the next week or so.
+
+Request information:
+Request ID:         {{request.label}}
+Short description:  {{request.name}}
+Amount:             ${{request.amount}}
+Submitter:          {{request.submitter}}
+Check recipient:    {{request.check_to_first_name}} {{ request.check_to_last_name }} (email: {{request.check_to_email}})
+Request Time:       {{request.request_time}}
+
+Thanks,
+{{ sender }}

@@ -35,6 +35,7 @@ class ReimbursementRequest(models.Model):
         permissions = (
             ('can_list', 'Can list requests',),
             ('can_approve', 'Can approve requests',),
+            ('can_email', 'Can send mail about requests',),
         )
 
     def __unicode__(self, ):
@@ -106,3 +107,85 @@ class Voucher(models.Model):
             ('generate_vouchers', 'Can generate vouchers',),
         )
 
+
+class StockEmail:
+    def __init__(self, name, label, recipients, template, subject_template, context, ):
+        """
+        Initialize a stock email object.
+        
+        Each argument is required.
+        
+        name:       Short name. Letters, numbers, and hyphens only.
+        label:      User-readable label. Briefly describe what the email says
+        recipients: Who receives the email. List of "recipient" (check recipient), "area" (area owner), "admins" (site admins)
+        template:   Django template filename with the actual text
+        subject_template: Django template string with the subject
+        context:    Type of context the email needs. Must be 'request' currently.
+        """
+
+        self.name       = name
+        self.label      = label
+        self.recipients = recipients
+        self.template   = template
+        self.subject_template = subject_template
+        self.context    = context
+
+    def send_email_request(self, request,):
+        """
+        Send an email that requires context "request".
+        """
+
+        assert self.context == 'request'
+
+        # Generate text
+        from django.template import Context, Template
+        from django.template.loader import get_template
+        ctx = Context({
+            'prefix': settings.EMAIL_SUBJECT_PREFIX,
+            'request': request,
+            'sender': settings.USER_EMAIL_SIGNATURE,
+        })
+        tmpl = get_template(self.template)
+        body = tmpl.render(ctx)
+        subject_tmpl = Template(self.subject_template)
+        subject = subject_tmpl.render(ctx)
+
+        # Generate recipients
+        recipients = []
+        for rt in self.recipients:
+            if rt == 'recipient':
+                recipients.append(request.check_to_email)
+            elif rt == 'area':
+                recipients.append(request.budget_area.owner_address())
+            elif rt == 'admins':
+                pass # you don't *actually* have a choice...
+        for name, addr in settings.ADMINS:
+            recipients.append(addr)
+
+        # Send mail!
+        from django.core.mail import send_mail
+        send_mail(
+            subject,
+            body,
+            settings.SERVER_EMAIL,
+            recipients,
+        )
+
+stock_emails = {
+    'nodoc': StockEmail(
+        name='nodoc',
+        label='No documentation',
+        recipients=['recipient', 'area',],
+        template='vouchers/emails/no_docs_user.txt',
+        subject_template='{{prefix}}Missing documentation for reimbursement',
+        context = 'request',
+    ),
+    'voucher-sao': StockEmail(
+        name='voucher-sao',
+        label='Voucher submitted to SAO',
+        recipients=['recipient', ],
+        template='vouchers/emails/voucher_sao_user.txt',
+        subject_template='{{prefix}}Reimbursement sent to SAO for processing',
+        context = 'request',
+    ),
+}

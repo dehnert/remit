@@ -109,5 +109,6 @@ INSTALLED_APPS = (
 )
 
 EMAIL_SUBJECT_PREFIX = "[Remit: %s] " % (GROUP_ABBR,)
+USER_EMAIL_SIGNATURE = "%s Treasury" % (GROUP_NAME,)
 
 from local_settings_after import *

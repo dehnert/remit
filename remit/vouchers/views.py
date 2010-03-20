@@ -172,6 +172,22 @@ def review_request(http_request, object_id):
         else:
             new = False
 
+    show_email = http_request.user.has_perm('vouchers.can_email')
+    if show_email:
+        email_message = ''
+        if http_request.method == 'POST' and 'send_email' in http_request.REQUEST:
+            mail = vouchers.models.stock_emails[http_request.REQUEST['email_name']]
+            assert mail.context == 'request'
+            mail.send_email_request(request_obj)
+            email_message = 'Sent email "%s".' % (mail.label, )
+        email_options = []
+        for mail in vouchers.models.stock_emails.values():
+            if mail.context == 'request':
+                email_options.append({
+                    'label': mail.label,
+                    'name' : mail.name,
+                })
+
     show_approve = (http_request.user.has_perm('vouchers.can_approve')
         and request_obj.approval_status == vouchers.models.APPROVAL_STATE_PENDING)
     if show_approve:
@@ -231,6 +247,9 @@ def review_request(http_request, object_id):
     if show_approve:
         context['approve_form'] = approve_form
         context['approve_message'] = approve_message
+    if show_email:
+        context['email_options'] = email_options
+        context['email_message'] = email_message
     return render_to_response('vouchers/ReimbursementRequest_review.html', context, context_instance=RequestContext(http_request), )
 
 @user_passes_test(lambda u: u.has_perm('vouchers.generate_vouchers'))

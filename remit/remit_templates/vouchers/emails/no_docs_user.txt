@@ -1,0 +1,13 @@
+Hi {{request.check_to_first_name}} {{ request.check_to_last_name }},
+   While attempting to process your reimbursement request (see below for details), we were unable to find any documentation of your reimbursement request. Please be sure you have submitted receipts or other appropriate documentation.
+
+Request information:
+Request ID:         {{request.label}}
+Short description:  {{request.name}}
+Amount:             ${{request.amount}}
+Submitter:          {{request.submitter}}
+Check recipient:    {{request.check_to_first_name}} {{ request.check_to_last_name }} (email: {{request.check_to_email}})
+Request Time:       {{request.request_time}}
+
+Thanks,
+{{ sender }}
