@@ -21,6 +21,8 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
     ]
     list_display = ('name', 'submitter', 'check_to_first_name', 'check_to_last_name', 'amount', 'budget_area', 'budget_term', )
 
+class VoucherAdmin(admin.ModelAdmin):
+    list_display = ('processed', 'description', 'signatory', 'first_name', 'last_name', 'amount', 'account', 'gl', )
 
 admin.site.register(vouchers.models.ReimbursementRequest, ReimbursementRequestAdmin)
-admin.site.register(vouchers.models.Voucher)
+admin.site.register(vouchers.models.Voucher, VoucherAdmin)

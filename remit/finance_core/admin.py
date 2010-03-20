@@ -20,13 +20,14 @@ class LineItemInline(admin.TabularInline):
 
 
 class LineItemAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('tx', 'label', 'amount', 'budget_area', 'layer', )
 
 
 class TransactionAdmin(admin.ModelAdmin):
     inlines = [
         LineItemInline,
     ]
+    list_display = ('name', 'desc', )
 
 
 admin.site.register(finance_core.models.BudgetArea, BudgetAreaAdmin)

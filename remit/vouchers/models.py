@@ -102,6 +102,15 @@ class Voucher(models.Model):
         lst = lst + ['']*(3-len(lst))
         return lst
 
+    def __unicode__(self, ):
+        return "%s: %s %s (%s) for $%s" % (
+            self.description,
+            self.first_name,
+            self.last_name,
+            self.email_address,
+            self.amount,
+        )
+
     class Meta:
         permissions = (
             ('generate_vouchers', 'Can generate vouchers',),
