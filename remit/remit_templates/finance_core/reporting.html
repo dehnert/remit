@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load misc %}
+
+{% block title %}Reporting{% endblock %}
+{% block content %}
+
+<h2>Reporting</h2>
+
+<h3>Parameters</h3>
+
+<table class='pretty-table'>
+<tr>
+    <th>Term</th>
+    <td>{{term_name}}</td>
+</tr>
+<tr>
+    <th>Budget Area</th>
+    <td>{{area}}</td>
+</tr>
+</table>
+
+<h3>Data</h3>
+
+<table class='pretty-table money-table'>
+<tr>
+    <th></th>
+{% for label in secondary_labels %}
+    <th>{{label}}</th>
+{% endfor %}
+</tr>
+{% for label, row in table_with_row_labels %}
+<tr>
+    <th>{{label}}</th>
+    {% for cell in row %}
+    <td>{% if cell %}<strong>{% endif %}${{cell}}{% if cell %}</strong>{% endif %}</td>
+    {% endfor %}
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
