@@ -71,6 +71,20 @@ def get_budget_areas(base_area):
     axis_objs = base_area.get_descendants()
     return name, axis, axis_objs,
 
+def get_budget_terms(base_area):
+    name = 'Budget Terms'
+    terms = finance_core.models.BudgetTerm.objects.all()
+    axis = [
+        (
+            term.pk,
+            term.name,
+            Q(budget_term=term),
+            Q(lineitem__budget_term=term),
+        )
+        for term in terms
+    ]
+    return name, axis, terms
+
 def get_layers(base_area):
     name = 'Layers'
     axis = [
@@ -86,6 +100,7 @@ def get_layers(base_area):
 
 axes = {
     'budget-areas': (get_budget_areas, True,  True,  ),
+    'budget-terms': (get_budget_terms, True,  True,  ),
     'layers':       (get_layers,       False, True,  ),
 }
 
