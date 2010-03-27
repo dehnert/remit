@@ -14,7 +14,6 @@ def display_tree(request):
 
 def reporting(request):
     line_items = finance_core.models.LineItem.objects.all()
-    term_name = 'All'
     compute_method = 'default'
 
     # Main limit to lineitems, relative to primary axis
@@ -26,6 +25,9 @@ def reporting(request):
         term_name = term_obj.name
         line_items = line_items.filter(budget_term=term_obj)
         main_lineitem_limit_primary = Q(lineitem__budget_term=term_obj)
+    else:
+        term_obj = None
+        term_name = 'All'
     if 'area' in request.REQUEST:
         base_area_obj = get_object_or_404(finance_core.models.BudgetArea, pk=request.REQUEST['area'])
     else:
@@ -39,7 +41,7 @@ def reporting(request):
     else:
         primary_slug = 'budget-areas'
     try:
-        primary_name, primary_axis, primary_axis_objs = finance_core.reporting.get_primary_axis(primary_slug, base_area_obj, )
+        primary_name, primary_axis, primary_axis_objs = finance_core.reporting.get_primary_axis(primary_slug, base_area_obj, term_obj, )
     except NotImplementedError:
         raise Http404("Primary axis %s is not implemented" % primary_slug)
 
@@ -49,7 +51,7 @@ def reporting(request):
     else:
         secondary_slug = 'layers'
     try:
-        secondary_name, secondary_axis, secondary_axis_obj = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, )
+        secondary_name, secondary_axis, secondary_axis_obj = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, term_obj, )
     except NotImplementedError:
         raise Http404("Secondary axis %s is not implemented" % secondary_slug)
     secondary_axis.append((None, 'Total', Q(), Q()))

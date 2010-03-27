@@ -44,21 +44,24 @@ def build_table_aggregate(line_items, main_lineitem_limit_primary, primary_axis,
 build_table = build_table_annotate
 
 
-def get_primary_axis(slug, base_area):
+def get_primary_axis(slug, base_area, term, ):
     if slug in axes and axes[slug][1]:
-        return axes[slug][0](base_area)
+        return axes[slug][0](base_area, term, )
     else:
         raise NotImplementedError
 
-def get_secondary_axis(slug, base_area):
+def get_secondary_axis(slug, base_area, term, ):
     if slug in axes and axes[slug][2]:
-        return axes[slug][0](base_area)
+        return axes[slug][0](base_area, term, )
     else:
         raise NotImplementedError
 
-def get_budget_areas(base_area):
+def get_budget_areas(base_area, term, ):
     name = 'Budget Areas'
     base_area_depth = base_area.depth
+    areas = base_area.get_descendants()
+    if term:
+        areas = areas.filter(Q(always=True) or Q(budget_term=term))
     axis = [
         (
             area.pk,
@@ -66,14 +69,17 @@ def get_budget_areas(base_area):
             Q(budget_area=area),
             Q(lineitem__budget_area=area),
         )
-        for area in base_area.get_descendants()
+        for area in areas
     ]
-    axis_objs = base_area.get_descendants()
+    axis_objs = areas
     return name, axis, axis_objs,
 
-def get_budget_terms(base_area):
+def get_budget_terms(base_area, term, ):
     name = 'Budget Terms'
-    terms = finance_core.models.BudgetTerm.objects.all()
+    if term:
+        terms = finance_core.models.BudgetTerm.objects.filter(pk=term.pk)
+    else:
+        terms = finance_core.models.BudgetTerm.objects.all()
     axis = [
         (
             term.pk,
@@ -85,7 +91,7 @@ def get_budget_terms(base_area):
     ]
     return name, axis, terms
 
-def get_layers(base_area):
+def get_layers(base_area, term, ):
     name = 'Layers'
     axis = [
         (

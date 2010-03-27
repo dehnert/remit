@@ -11,6 +11,7 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
 
     # Applicable to every term?
     always = models.BooleanField(blank=True, default=False)
+    budget_term = models.ManyToManyField('BudgetTerm', through='BudgetAreaTerm')
 
     # Contact / ACL information
     # If not specified, inherit from parent
