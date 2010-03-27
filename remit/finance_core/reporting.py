@@ -45,16 +45,14 @@ build_table = build_table_annotate
 
 
 def get_primary_axis(slug, base_area):
-    if slug == 'budget-areas':
-        return get_budget_areas(base_area)
+    if slug in axes and axes[slug][1]:
+        return axes[slug][0](base_area)
     else:
-        raise UnsupportedOperationException()
+        raise NotImplementedError
 
 def get_secondary_axis(slug, base_area):
-    if slug == 'budget-areas':
-        return get_budget_areas(base_area)
-    elif slug == 'layers':
-        return get_layers(base_area)
+    if slug in axes and axes[slug][2]:
+        return axes[slug][0](base_area)
     else:
         raise NotImplementedError
 
@@ -85,4 +83,9 @@ def get_layers(base_area):
         for layer in finance_core.models.layers
     ]
     return name, axis, None,
+
+axes = {
+    'budget-areas': (get_budget_areas, True,  True,  ),
+    'layers':       (get_layers,       False, True,  ),
+}
 
