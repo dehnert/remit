@@ -13,13 +13,18 @@ def display_tree(request):
     return HttpResponse(root.dump_to_html())
 
 def reporting(request):
-    line_items = finance_core.models.LineItem.objects.all()
     compute_method = 'default'
     if 'compute_method' in request.REQUEST:
         compute_method = request.REQUEST['compute_method']
 
+    ###############################
+    # Retrieve the various limits #
+    ###############################
+    line_items = finance_core.models.LineItem.objects.all()
     # Main limit to lineitems, relative to primary axis
     main_lineitem_limits_primary = []
+
+    # Term
     if 'term' in request.REQUEST and not request.REQUEST['term'] == 'all':
         term_obj = get_object_or_404(finance_core.models.BudgetTerm, slug=request.REQUEST['term'])
         term_name = term_obj.name
@@ -28,6 +33,8 @@ def reporting(request):
     else:
         term_obj = None
         term_name = 'All'
+
+    # Area
     if 'area' in request.REQUEST:
         base_area_obj = get_object_or_404(finance_core.models.BudgetArea, pk=request.REQUEST['area'])
     else:
@@ -35,6 +42,8 @@ def reporting(request):
     all_relevant_areas = base_area_obj.get_descendants()
     line_items = line_items.filter(budget_area__in=all_relevant_areas)
     main_lineitem_limits_primary.append(Q(lineitem__budget_area__in=all_relevant_areas))
+
+    # Layer
     if 'layer' in request.REQUEST and request.REQUEST['layer'] != 'all':
         try:
             layer_id = int(request.REQUEST['layer'])
@@ -47,7 +56,9 @@ def reporting(request):
         layer = 'all'
     main_lineitem_limit_primary = Q(*main_lineitem_limits_primary)
 
-    # Initialize the axis
+    #######################
+    # Initialize the axis #
+    #######################
     # Primary
     if 'primary' in request.REQUEST:
         primary_slug = request.REQUEST['primary']
@@ -74,7 +85,9 @@ def reporting(request):
         primary_labels.append(label)
     secondary_labels = [ secondary[1] for secondary in secondary_axis ]
 
-    # Do the computation
+    ######################
+    # Do the computation #
+    ######################
     compute_methods = {
         'default':   finance_core.reporting.build_table,
         'aggregate': finance_core.reporting.build_table_aggregate,
@@ -93,6 +106,9 @@ def reporting(request):
         print "Number of queries:\t%d" % (len(connection.queries),)
         print "Table size:\t%dx%d" % (len(primary_labels), len(secondary_labels), )
 
+    ##########
+    # Render #
+    ##########
     term_options = finance_core.models.BudgetTerm.objects.all()
     area_options = finance_core.models.BudgetArea.objects.filter(always=True)
     context = {
