@@ -16,9 +16,7 @@ def build_table_annotate(line_items, main_lineitem_limit_primary, primary_axis, 
         else: return obj.lineitem__amount__sum
 
     # Do the real work
-    print secondary_axis
     for num, (pk, label, qobj_lineitem, qobj_primary) in enumerate(secondary_axis):
-        print num
         secondary_results = (primary_axis_objs.filter(main_lineitem_limit_primary, qobj_primary, ).annotate(Sum('lineitem__amount')))
         for cell in secondary_results:
             #print cell, cell.pk, arcprimary[cell.pk], num, table[arcprimary[cell.pk]]
