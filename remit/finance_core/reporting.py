@@ -60,7 +60,7 @@ def get_budget_areas(base_area, term, ):
     base_area_depth = base_area.depth
     areas = base_area.get_descendants()
     if term:
-        areas = areas.filter(Q(always=True) or Q(budget_term=term))
+        areas = areas.filter(Q(always=True) | Q(budget_term=term))
     axis = [
         (
             area.pk,
