@@ -31,30 +31,33 @@ def reporting(request):
     else:
         base_area_obj = finance_core.models.BudgetArea.get_by_path(['Accounts'])
     line_items = line_items.filter(budget_area__in=base_area_obj.get_descendants())
-    base_area_depth = base_area_obj.depth
-    #print base_area_obj
 
     # Initialize the axis
-    primary_name = 'Budget Areas'
-    primary_axis = [
-        (area.pk, area.indented_name(base_area_depth), Q(budget_area=area), ) for area in base_area_obj.get_descendants()
-    ]
-    primary_axis_objs = base_area_obj.get_descendants()
-    secondary_name = 'Layers'
-    secondary_axis = [
-        (
-            finance_core.models.layer_name(layer),
-            Q(layer=finance_core.models.layer_num(layer)),
-            Q(lineitem__layer=finance_core.models.layer_num(layer)),
-        )
-        for layer in finance_core.models.layers
-    ]
-    secondary_axis.append(('Total', Q(), Q()))
+    # Primary
+    if 'primary' in request.REQUEST:
+        primary_slug = request.REQUEST['primary']
+    else:
+        primary_slug = 'budget-areas'
+    try:
+        primary_name, primary_axis, primary_axis_objs = finance_core.reporting.get_primary_axis(primary_slug, base_area_obj, )
+    except NotImplementedError:
+        raise Http404("Primary axis %s is not implemented" % primary_slug)
+
+    # Secondary
+    if 'secondary' in request.REQUEST:
+        secondary_slug = request.REQUEST['secondary']
+    else:
+        secondary_slug = 'layers'
+    try:
+        secondary_name, secondary_axis, secondary_axis_obj = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, )
+    except NotImplementedError:
+        raise Http404("Secondary axis %s is not implemented" % secondary_slug)
+    secondary_axis.append((None, 'Total', Q(), Q()))
 
     primary_labels = [ ]
-    for num, (pk, label, qobj, ) in enumerate(primary_axis):
+    for num, (pk, label, qobj, objrel_qobj, ) in enumerate(primary_axis):
         primary_labels.append(label)
-    secondary_labels = [ secondary[0] for secondary in secondary_axis ]
+    secondary_labels = [ secondary[1] for secondary in secondary_axis ]
 
     # Do the computation
     compute_methods = {
