@@ -1,8 +1,8 @@
 #!/bin/bash
 
 methods="annotate aggregate"
-baseurl=${1:-http://localhost:8001/finance_core/reporting/?term=2010-spring}
-baseurls="$baseurl $baseurl&area=13 $baseurl&layer=30"
+baseurl=${1:-http://localhost:8001/finance_core/reporting/?a=b}
+baseurls="$baseurl&term=2010-spring $baseurl&area=13 $baseurl&layer=30"
 for testbaseurl in $baseurls; do
     echo $testbaseurl
     dirname=$(mktemp -d /tmp/remit.XXXXXX)
