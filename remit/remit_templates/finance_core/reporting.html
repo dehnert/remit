@@ -11,6 +11,9 @@
 <form>
 <table class='pretty-table'>
 <tr>
+    <th colspan='2'>Limits</th>
+</tr>
+<tr>
     <th>Term</th>
     <td><select name='term'>
     <option {% ifequal term_name "All" %}selected {% endifequal %}value='all'>All</option>
@@ -29,6 +32,9 @@
     <option {%ifequal layer "all"%}selected {%endifequal%}value='all'>All</option>
     {% for layer_opt in layer_options %}<option {%ifequal layer layer_opt %}selected {%endifequal%}value='{{layer_opt|layer_num}}'>{{layer_opt|layer_name}}</option>{%endfor%}
     </select></td>
+</tr>
+<tr>
+    <th colspan='2'>Axes</th>
 </tr>
 <tr>
     <th>Primary Axis</th>
