@@ -8,14 +8,33 @@
 
 <h3>Parameters</h3>
 
+<form>
 <table class='pretty-table'>
 <tr>
     <th>Term</th>
-    <td>{{term_name}}</td>
+    <td><select name='term'>
+    <option {% ifequal term_name "All" %}selected {% endifequal %}value='all'>All</option>
+    {% for term_opt in term_options %}<option {% ifequal term_name term_opt.name %}selected {% endifequal %}value={{term_opt.slug}}>{{term_opt.name}}</option>{% endfor %}
+    </select></td>
 </tr>
 <tr>
     <th>Budget Area</th>
     <td>{{area}}</td>
+</tr>
+<tr>
+    <th>Primary Axis</th>
+    <td><select name='primary'>
+    {% for slug, content in axes.items %}{% if content.2 %}<option {% ifequal primary_name content.0 %}selected {% endifequal %}value='{{slug}}'>{{content.0}}</option>{% endif %}{% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <th>Secondary Axis</th>
+    <td><select name='secondary'>
+    {% for slug, content in axes.items %}{% if content.3 %}<option {% ifequal secondary_name content.0 %}selected {% endifequal %}value='{{slug}}'>{{content.0}}</option>{% endif %}{% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <th colspan='2'><input type='submit' name='submit' value='Submit'></th>
 </tr>
 </table>
 

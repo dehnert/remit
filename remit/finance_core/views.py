@@ -20,7 +20,7 @@ def reporting(request):
     main_lineitem_limit_primary = Q()
     if 'compute_method' in request.REQUEST:
         compute_method = request.REQUEST['compute_method']
-    if 'term' in request.REQUEST:
+    if 'term' in request.REQUEST and not request.REQUEST['term'] == 'all':
         term_obj = get_object_or_404(finance_core.models.BudgetTerm, slug=request.REQUEST['term'])
         term_name = term_obj.name
         line_items = line_items.filter(budget_term=term_obj)
@@ -80,10 +80,13 @@ def reporting(request):
         print "Number of queries:\t%d" % (len(connection.queries),)
         print "Table size:\t%dx%d" % (len(primary_labels), len(secondary_labels), )
 
+    term_options = finance_core.models.BudgetTerm.objects.all()
     context = {
         'pagename':'reporting',
         'term_name': term_name,
+        'term_options': term_options,
         'area': base_area_obj,
+        'axes': finance_core.reporting.axes,
         'primary_name': primary_name,
         'secondary_name': secondary_name,
         'primary_labels': primary_labels,

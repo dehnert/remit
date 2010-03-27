@@ -45,19 +45,18 @@ build_table = build_table_annotate
 
 
 def get_primary_axis(slug, base_area, term, ):
-    if slug in axes and axes[slug][1]:
-        return axes[slug][0](base_area, term, )
+    if slug in axes and axes[slug][2]:
+        return (axes[slug][0], ) + axes[slug][1](base_area, term, )
     else:
         raise NotImplementedError
 
 def get_secondary_axis(slug, base_area, term, ):
-    if slug in axes and axes[slug][2]:
-        return axes[slug][0](base_area, term, )
+    if slug in axes and axes[slug][3]:
+        return (axes[slug][0], ) + axes[slug][1](base_area, term, )
     else:
         raise NotImplementedError
 
 def get_budget_areas(base_area, term, ):
-    name = 'Budget Areas'
     base_area_depth = base_area.depth
     areas = base_area.get_descendants()
     if term:
@@ -72,10 +71,9 @@ def get_budget_areas(base_area, term, ):
         for area in areas
     ]
     axis_objs = areas
-    return name, axis, axis_objs,
+    return axis, axis_objs,
 
 def get_budget_terms(base_area, term, ):
-    name = 'Budget Terms'
     if term:
         terms = finance_core.models.BudgetTerm.objects.filter(pk=term.pk)
     else:
@@ -89,10 +87,9 @@ def get_budget_terms(base_area, term, ):
         )
         for term in terms
     ]
-    return name, axis, terms
+    return axis, terms
 
 def get_layers(base_area, term, ):
-    name = 'Layers'
     axis = [
         (
             finance_core.models.layer_num(layer),
@@ -102,11 +99,11 @@ def get_layers(base_area, term, ):
         )
         for layer in finance_core.models.layers
     ]
-    return name, axis, None,
+    return axis, None,
 
 axes = {
-    'budget-areas': (get_budget_areas, True,  True,  ),
-    'budget-terms': (get_budget_terms, True,  True,  ),
-    'layers':       (get_layers,       False, True,  ),
+    'budget-areas': ('Budget Areas',  get_budget_areas, True,  True,  ),
+    'budget-terms': ('Budget Terms',  get_budget_terms, True,  True,  ),
+    'layers':       ('Layers',        get_layers,       False, True,  ),
 }
 
