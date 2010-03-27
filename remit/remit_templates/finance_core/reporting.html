@@ -14,12 +14,21 @@
     <th>Term</th>
     <td><select name='term'>
     <option {% ifequal term_name "All" %}selected {% endifequal %}value='all'>All</option>
-    {% for term_opt in term_options %}<option {% ifequal term_name term_opt.name %}selected {% endifequal %}value={{term_opt.slug}}>{{term_opt.name}}</option>{% endfor %}
+    {% for term_opt in term_options %}<option {% ifequal term_name term_opt.name %}selected {% endifequal %}value='{{term_opt.slug}}'>{{term_opt.name}}</option>{% endfor %}
     </select></td>
 </tr>
 <tr>
     <th>Budget Area</th>
-    <td>{{area}}</td>
+    <td><select name='area'>
+    {% for area_opt in area_options %}<option {%ifequal area area_opt %}selected {%endifequal%}value='{{area_opt.pk}}'>{{area_opt.indented_name}}</option>{%endfor%}
+    </select></td>
+</tr>
+<tr>
+    <th>Layer</th>
+    <td><select name='layer'>
+    <option {%ifequal layer "all"%}selected {%endifequal%}value='all'>All</option>
+    {% for layer_opt in layer_options %}<option {%ifequal layer layer_opt %}selected {%endifequal%}value='{{layer_opt|layer_num}}'>{{layer_opt|layer_name}}</option>{%endfor%}
+    </select></td>
 </tr>
 <tr>
     <th>Primary Axis</th>

@@ -15,16 +15,16 @@ def display_tree(request):
 def reporting(request):
     line_items = finance_core.models.LineItem.objects.all()
     compute_method = 'default'
-
-    # Main limit to lineitems, relative to primary axis
-    main_lineitem_limit_primary = Q()
     if 'compute_method' in request.REQUEST:
         compute_method = request.REQUEST['compute_method']
+
+    # Main limit to lineitems, relative to primary axis
+    main_lineitem_limits_primary = []
     if 'term' in request.REQUEST and not request.REQUEST['term'] == 'all':
         term_obj = get_object_or_404(finance_core.models.BudgetTerm, slug=request.REQUEST['term'])
         term_name = term_obj.name
         line_items = line_items.filter(budget_term=term_obj)
-        main_lineitem_limit_primary = Q(lineitem__budget_term=term_obj)
+        main_lineitem_limits_primary.append(Q(lineitem__budget_term=term_obj))
     else:
         term_obj = None
         term_name = 'All'
@@ -32,7 +32,20 @@ def reporting(request):
         base_area_obj = get_object_or_404(finance_core.models.BudgetArea, pk=request.REQUEST['area'])
     else:
         base_area_obj = finance_core.models.BudgetArea.get_by_path(['Accounts'])
-    line_items = line_items.filter(budget_area__in=base_area_obj.get_descendants())
+    all_relevant_areas = base_area_obj.get_descendants()
+    line_items = line_items.filter(budget_area__in=all_relevant_areas)
+    main_lineitem_limits_primary.append(Q(lineitem__budget_area__in=all_relevant_areas))
+    if 'layer' in request.REQUEST and request.REQUEST['layer'] != 'all':
+        try:
+            layer_id = int(request.REQUEST['layer'])
+            layer = finance_core.models.get_layer_by_num(layer_id)
+        except KeyError:
+            raise Http404("Invalid layer %s request" % request.REQUEST['layer'])
+        line_items = line_items.filter(layer=layer_id)
+        main_lineitem_limits_primary.append(Q(lineitem__layer=layer_id))
+    else:
+        layer = 'all'
+    main_lineitem_limit_primary = Q(*main_lineitem_limits_primary)
 
     # Initialize the axis
     # Primary
@@ -81,11 +94,15 @@ def reporting(request):
         print "Table size:\t%dx%d" % (len(primary_labels), len(secondary_labels), )
 
     term_options = finance_core.models.BudgetTerm.objects.all()
+    area_options = finance_core.models.BudgetArea.objects.filter(always=True)
     context = {
         'pagename':'reporting',
         'term_name': term_name,
         'term_options': term_options,
         'area': base_area_obj,
+        'area_options': area_options,
+        'layer': layer,
+        'layer_options': finance_core.models.layers,
         'axes': finance_core.reporting.axes,
         'primary_name': primary_name,
         'secondary_name': secondary_name,
