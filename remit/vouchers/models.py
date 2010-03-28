@@ -88,12 +88,12 @@ class Voucher(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     email_address = models.EmailField(max_length=50)
-    mailing_address = models.TextField()
+    mailing_address = models.TextField(blank=True, )
     amount = models.DecimalField(max_digits=7, decimal_places=2,)
     description = models.TextField()
     gl = models.IntegerField()
     processed = models.BooleanField()
-    documentation = models.ForeignKey('Documentation', null=True, )
+    documentation = models.ForeignKey('Documentation', blank=True, null=True, )
 
     def mailing_addr_lines(self):
         import re
