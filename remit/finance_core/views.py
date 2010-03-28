@@ -94,6 +94,9 @@ def reporting(request):
     else:
         raise Http404("Unknown compute_method selected")
     table = build_table(line_items, primary_field, secondary_field, primary_axis, secondary_axis, )
+    finance_core.reporting.append_totals(table)
+    primary_labels.append("Total")
+    secondary_labels.append("Total")
 
     debug = True
     debug = False

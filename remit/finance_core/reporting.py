@@ -105,3 +105,13 @@ axes = {
     'layers':       ('Layers',       'layer',       get_layers,       True,  True,  ),
 }
 
+def append_totals(table):
+    # Row totals
+    for row in table:
+        row.append(sum(row))
+    # Column totals
+    if len(table) > 0:
+        totalrow = [None]*len(table[0])
+        for col in xrange(len(table[0])):
+            totalrow[col] = sum([row[col] for row in table])
+        table.append(totalrow)
