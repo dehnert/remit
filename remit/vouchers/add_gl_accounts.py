@@ -47,7 +47,7 @@ def add_gl_accounts():
                 parent = finance_core.models.BudgetArea.get_by_pathstr(path)
             else:
                 parent = base
-            parent.add_child(name=name, account_number=number)
+            parent.add_child(name=name, account_number=number, always=True, )
         else:
             print "%s (%s) already present" % (name, number,)
 
