@@ -74,7 +74,6 @@ def reporting(request):
         secondary_name, secondary_field, secondary_axis = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, term_obj, )
     except NotImplementedError:
         raise Http404("Secondary axis %s is not implemented" % secondary_slug)
-    #secondary_axis.append((None, 'Total', Q(), Q()))
 
     primary_labels = [ ]
     for num, (pk, label, qobj, ) in enumerate(primary_axis):
