@@ -15,6 +15,7 @@
         {% if perms.vouchers.can_list %}
         <li{% ifequal pagename "list_requests" %} class='selected'{% endifequal %}><a href="{% url list_requests %}">List requests</a></li>
         {% endif %}
+        <li{% ifequal pagename "reporting" %} class='selected'{% endifequal %}><a href="{% url reporting %}">Reporting</a></li>
     </ul>
     <div id='content'>
 {% block content %}{% endblock %}

@@ -1,4 +1,5 @@
 from django import template
+import finance_core.models
 
 register = template.Library()
 
@@ -21,3 +22,6 @@ def approval_status_class(value):
     for num, name in APPROVAL_STATES:
         if num == value: return name.lower()
     else: return value
+
+register.filter('layer_num', finance_core.models.layer_num)
+register.filter('layer_name', finance_core.models.layer_name)

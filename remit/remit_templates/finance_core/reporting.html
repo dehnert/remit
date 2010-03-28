@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load misc %}
+
+{% block title %}Reporting{% endblock %}
+{% block content %}
+
+<h2>Reporting</h2>
+
+<h3>Parameters</h3>
+
+<form>
+<table class='pretty-table'>
+<tr>
+    <th colspan='2'>Limits</th>
+</tr>
+<tr>
+    <th>Term</th>
+    <td><select name='term'>
+    <option {% ifequal term_name "All" %}selected {% endifequal %}value='all'>All</option>
+    {% for term_opt in term_options %}<option {% ifequal term_name term_opt.name %}selected {% endifequal %}value='{{term_opt.slug}}'>{{term_opt.name}}</option>{% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <th>Budget Area</th>
+    <td><select name='area'>
+    {% for area_opt in area_options %}<option {%ifequal area area_opt %}selected {%endifequal%}value='{{area_opt.pk}}'>{{area_opt.indented_name}}</option>{%endfor%}
+    </select></td>
+</tr>
+<tr>
+    <th>Layer</th>
+    <td><select name='layer'>
+    <option {%ifequal layer "all"%}selected {%endifequal%}value='all'>All</option>
+    {% for layer_opt in layer_options %}<option {%ifequal layer layer_opt %}selected {%endifequal%}value='{{layer_opt|layer_num}}'>{{layer_opt|layer_name}}</option>{%endfor%}
+    </select></td>
+</tr>
+<tr>
+    <th colspan='2'>Axes</th>
+</tr>
+<tr>
+    <th>Primary Axis</th>
+    <td><select name='primary'>
+    {% for slug, content in axes.items %}{% if content.3 %}<option {% ifequal primary_name content.0 %}selected {% endifequal %}value='{{slug}}'>{{content.0}}</option>{% endif %}{% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <th>Secondary Axis</th>
+    <td><select name='secondary'>
+    {% for slug, content in axes.items %}{% if content.4 %}<option {% ifequal secondary_name content.0 %}selected {% endifequal %}value='{{slug}}'>{{content.0}}</option>{% endif %}{% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <th colspan='2'><input type='submit' name='submit' value='Submit'></th>
+</tr>
+</table>
+
+<h3>Data</h3>
+
+<table class='pretty-table money-table'>
+<tr>
+    <th></th>
+{% for label in secondary_labels %}
+    <th>{{label}}</th>
+{% endfor %}
+</tr>
+{% for label, row in table_with_row_labels %}
+<tr>
+    <th>{{label}}</th>
+    {% for cell in row %}
+    <td>{% if cell %}<strong>{% endif %}${{cell}}{% if cell %}</strong>{% endif %}</td>
+    {% endfor %}
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

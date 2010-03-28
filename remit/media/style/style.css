@@ -77,3 +77,14 @@ div.errorbox h3 {
 {
     background: #F88;
 }
+
+table.money-table td
+{
+    text-align: right;
+}
+table.money-table th
+{
+    white-space: pre-wrap;
+    text-align: left;
+    font-weight: normal;
+}
