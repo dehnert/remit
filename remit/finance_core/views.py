@@ -21,15 +21,12 @@ def reporting(request):
     # Retrieve the various limits #
     ###############################
     line_items = finance_core.models.LineItem.objects.all()
-    # Main limit to lineitems, relative to primary axis
-    main_lineitem_limits_primary = []
 
     # Term
     if 'term' in request.REQUEST and not request.REQUEST['term'] == 'all':
         term_obj = get_object_or_404(finance_core.models.BudgetTerm, slug=request.REQUEST['term'])
         term_name = term_obj.name
         line_items = line_items.filter(budget_term=term_obj)
-        main_lineitem_limits_primary.append(Q(lineitem__budget_term=term_obj))
     else:
         term_obj = None
         term_name = 'All'
@@ -40,8 +37,9 @@ def reporting(request):
     else:
         base_area_obj = finance_core.models.BudgetArea.get_by_path(['Accounts'])
     all_relevant_areas = base_area_obj.get_descendants()
+    if term_obj:
+        all_relevant_areas = all_relevant_areas.filter(Q(always=True) | Q(budget_term=term_obj))
     line_items = line_items.filter(budget_area__in=all_relevant_areas)
-    main_lineitem_limits_primary.append(Q(lineitem__budget_area__in=all_relevant_areas))
 
     # Layer
     if 'layer' in request.REQUEST and request.REQUEST['layer'] != 'all':
@@ -51,10 +49,8 @@ def reporting(request):
         except KeyError:
             raise Http404("Invalid layer %s request" % request.REQUEST['layer'])
         line_items = line_items.filter(layer=layer_id)
-        main_lineitem_limits_primary.append(Q(lineitem__layer=layer_id))
     else:
         layer = 'all'
-    main_lineitem_limit_primary = Q(*main_lineitem_limits_primary)
 
     #######################
     # Initialize the axis #
@@ -65,7 +61,7 @@ def reporting(request):
     else:
         primary_slug = 'budget-areas'
     try:
-        primary_name, primary_field, primary_axis, primary_axis_objs = finance_core.reporting.get_primary_axis(primary_slug, base_area_obj, term_obj, )
+        primary_name, primary_field, primary_axis = finance_core.reporting.get_primary_axis(primary_slug, base_area_obj, term_obj, )
     except NotImplementedError:
         raise Http404("Primary axis %s is not implemented" % primary_slug)
 
@@ -75,13 +71,13 @@ def reporting(request):
     else:
         secondary_slug = 'layers'
     try:
-        secondary_name, secondary_field, secondary_axis, secondary_axis_obj = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, term_obj, )
+        secondary_name, secondary_field, secondary_axis = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, term_obj, )
     except NotImplementedError:
         raise Http404("Secondary axis %s is not implemented" % secondary_slug)
     #secondary_axis.append((None, 'Total', Q(), Q()))
 
     primary_labels = [ ]
-    for num, (pk, label, qobj, objrel_qobj, ) in enumerate(primary_axis):
+    for num, (pk, label, qobj, ) in enumerate(primary_axis):
         primary_labels.append(label)
     secondary_labels = [ secondary[1] for secondary in secondary_axis ]
 
@@ -93,15 +89,13 @@ def reporting(request):
         'aggregate': finance_core.reporting.build_table_aggregate,
         'annotate':  finance_core.reporting.build_table_annotate,
     }
-    if compute_method == 'valannotate':
-        table = finance_core.reporting.build_table_valannotate(line_items, primary_field, secondary_field, primary_axis, secondary_axis, )
+    if compute_method in compute_methods:
+        build_table = compute_methods[compute_method]
     else:
-        if compute_method in compute_methods:
-            build_table = compute_methods[compute_method]
-        else:
-            raise Http404("Unknown compute_method selected")
-        table = build_table(line_items, main_lineitem_limit_primary, primary_axis, primary_axis_objs, secondary_axis, )
+        raise Http404("Unknown compute_method selected")
+    table = build_table(line_items, primary_field, secondary_field, primary_axis, secondary_axis, )
 
+    debug = True
     debug = False
     if debug:
         from django.db import connection
