@@ -103,6 +103,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'treebeard',
+    'south',
     'vouchers',
     'finance_core',
     'util',
