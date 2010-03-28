@@ -53,7 +53,7 @@ def reporting(request):
         layer = 'all'
 
     #######################
-    # Initialize the axis #
+    # Initialize the axes #
     #######################
     # Primary
     if 'primary' in request.REQUEST:
