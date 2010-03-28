@@ -3,6 +3,8 @@
 \documentclass{mitvoucher}
 
 \signatoryemail{esp-treasurer@mit.edu}
+\usepackage{pdfpages}
+\newcommand{\documentationpath}{%templatetag openbrace%}{{MEDIA_ROOT}}{%templatetag closebrace%}
 
 \begin{document}
 
@@ -41,6 +43,10 @@ The following pages contain the vouchers themselves.
 }
 \gl{ {{f.gl|texescape}} }
 \end{voucher}
+
+{% if f.documentation %}
+\includepdf[pages=-]{\documentationpath/{{f.documentation.backing_file}}}
+{% endif %}
 {% endfor %}
 
 \end{document}

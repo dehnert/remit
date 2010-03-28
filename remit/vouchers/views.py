@@ -185,6 +185,8 @@ def review_request(http_request, object_id):
 
             if doc_upload_form.is_valid(): # All validation rules pass
                 new_docs = doc_upload_form.save()
+                request_obj.documentation = new_docs
+                request_obj.save()
 
                 return HttpResponseRedirect(reverse(review_request, args=[object_id],)) # Redirect after POST
         else:
@@ -285,7 +287,10 @@ def generate_vouchers(http_request, *args):
     if unprocessed:
         lst = lst.filter(processed=False)
 
-    context = {'vouchers': lst }
+    context = {
+        'vouchers': lst,
+        'MEDIA_ROOT': settings.MEDIA_ROOT,
+    }
     response = render_to_response('vouchers/vouchers.tex', context, context_instance=RequestContext(http_request), )
 
     # Send mail

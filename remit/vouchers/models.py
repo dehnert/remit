@@ -62,6 +62,7 @@ class ReimbursementRequest(models.Model):
         voucher.amount = self.amount
         voucher.description = self.label() + ': ' + self.name
         voucher.gl = self.expense_area.get_account_number()
+        voucher.documentation = self.documentation
         voucher.save()
         finance_core.models.make_transfer(
             self.name,
@@ -121,9 +122,12 @@ class Voucher(models.Model):
 
 class Documentation(models.Model):
     backing_file = models.FileField(upload_to='documentation', verbose_name='File', help_text='PDF files only', )
-    label = models.CharField(max_length=50, )
-    submitter = models.CharField(max_length=10) # MIT username of submitter
+    label = models.CharField(max_length=50, default="")
+    submitter = models.CharField(max_length=10, null=True, ) # MIT username of submitter
     upload_time = models.DateTimeField(default=datetime.datetime.now)
+
+    def __unicode__(self, ):
+        return "%s; uploaded at %s" % (self.label, self.upload_time, )
 
 
 class StockEmail:
