@@ -30,6 +30,7 @@ class ReimbursementRequest(models.Model):
     printing_time = models.DateTimeField(blank=True, null=True,)
     name = models.CharField(max_length=50, verbose_name='short description', )
     description = models.TextField(blank=True, verbose_name='long description', )
+    documentation = models.ForeignKey('Documentation', null=True, )
 
     class Meta:
         permissions = (
@@ -91,6 +92,7 @@ class Voucher(models.Model):
     description = models.TextField()
     gl = models.IntegerField()
     processed = models.BooleanField()
+    documentation = models.ForeignKey('Documentation', null=True, )
 
     def mailing_addr_lines(self):
         import re
@@ -115,6 +117,13 @@ class Voucher(models.Model):
         permissions = (
             ('generate_vouchers', 'Can generate vouchers',),
         )
+
+
+class Documentation(models.Model):
+    backing_file = models.FileField(upload_to='documentation', verbose_name='File', help_text='PDF files only', )
+    label = models.CharField(max_length=50, )
+    submitter = models.CharField(max_length=10) # MIT username of submitter
+    upload_time = models.DateTimeField(default=datetime.datetime.now)
 
 
 class StockEmail:

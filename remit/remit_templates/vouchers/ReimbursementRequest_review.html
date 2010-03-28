@@ -54,6 +54,10 @@
     </td>
 </tr>
 <tr>
+    <th>Documentation</th>
+    <td>{{rr.documentation}}</td>
+</tr>
+<tr>
     <th>Request Time</th>
     <td>{{rr.request_time}}</td>
 </tr>
@@ -66,6 +70,19 @@
     <td>{{rr.printing_time}}</td>
 </tr>
 </table>
+
+{% if doc_form %}
+<h3>(Optional) Upload Documentation</h3>
+
+<p>If you ordered online, you may wish to upload documentation instead of providing a physical copy.</p>
+
+<form enctype="multipart/form-data" method="post" action="">
+<table class='pretty-table'>
+{{ doc_form.as_table }}
+<tr><th colspan='2'><input type='submit' value='Upload Documentation' /></th></tr>
+</table>
+</form>
+{% endif %}
 
 {% if new %}
 {% include "vouchers/reimbursementrequest_instructions.fragment.html" %}

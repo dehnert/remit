@@ -1,5 +1,5 @@
 import vouchers.models
-from vouchers.models import ReimbursementRequest
+from vouchers.models import ReimbursementRequest, Documentation
 from finance_core.models import BudgetTerm, BudgetArea
 
 from django.contrib.auth.decorators import user_passes_test
@@ -50,6 +50,15 @@ class CommitteesField(ModelChoiceField):
 class SelectRequestBasicsForm(Form):
     area = CommitteesField()
     term = ModelChoiceField(queryset = BudgetTerm.objects.all())
+
+class DocUploadForm(ModelForm):
+    class Meta:
+        model = Documentation
+        fields = (
+            'label',
+            'backing_file',
+        )
+
 
 @user_passes_test(lambda u: u.is_authenticated())
 def select_request_basics(http_request, ):
@@ -110,6 +119,7 @@ def submit_request(http_request, term, committee):
         form = RequestForm(http_request.POST, instance=new_request) # A form bound to the POST data
         form.fields['budget_area'] = CommitteeBudgetAreasField(comm_obj)
         form.fields['expense_area'] = ExpenseAreasField()
+
         if form.is_valid(): # All validation rules pass
             request_obj = form.save()
 
@@ -164,6 +174,23 @@ def review_request(http_request, object_id):
         else:
             new = False
 
+    # DOCUMENTATION #
+    if request_obj.documentation:
+        doc_upload_form = None
+    else:
+        new_docs = Documentation()
+        new_docs.submitter = http_request.user.username
+        if http_request.method == 'POST': # If the form has been submitted...
+            doc_upload_form = DocUploadForm(http_request.POST, http_request.FILES, instance=new_docs) # A form bound to the POST data
+
+            if doc_upload_form.is_valid(): # All validation rules pass
+                new_docs = doc_upload_form.save()
+
+                return HttpResponseRedirect(reverse(review_request, args=[object_id],)) # Redirect after POST
+        else:
+            doc_upload_form = DocUploadForm(instance=new_docs, ) # An unbound form
+
+    # SEND EMAILS
     show_email = http_request.user.has_perm('vouchers.can_email')
     if show_email:
         email_message = ''
@@ -180,6 +207,7 @@ def review_request(http_request, object_id):
                     'name' : mail.name,
                 })
 
+    # APPROVE VOUCHERS
     show_approve = (http_request.user.has_perm('vouchers.can_approve')
         and request_obj.approval_status == vouchers.models.APPROVAL_STATE_PENDING)
     if show_approve:
@@ -228,6 +256,7 @@ def review_request(http_request, object_id):
         'rr':request_obj,
         'pagename':'request_reimbursement',
         'new': new,
+        'doc_form': doc_upload_form,
     }
     if show_approve:
         context['approve_form'] = approve_form
