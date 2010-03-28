@@ -65,7 +65,7 @@ def reporting(request):
     else:
         primary_slug = 'budget-areas'
     try:
-        primary_name, primary_axis, primary_axis_objs = finance_core.reporting.get_primary_axis(primary_slug, base_area_obj, term_obj, )
+        primary_name, primary_field, primary_axis, primary_axis_objs = finance_core.reporting.get_primary_axis(primary_slug, base_area_obj, term_obj, )
     except NotImplementedError:
         raise Http404("Primary axis %s is not implemented" % primary_slug)
 
@@ -75,10 +75,10 @@ def reporting(request):
     else:
         secondary_slug = 'layers'
     try:
-        secondary_name, secondary_axis, secondary_axis_obj = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, term_obj, )
+        secondary_name, secondary_field, secondary_axis, secondary_axis_obj = finance_core.reporting.get_secondary_axis(secondary_slug, base_area_obj, term_obj, )
     except NotImplementedError:
         raise Http404("Secondary axis %s is not implemented" % secondary_slug)
-    secondary_axis.append((None, 'Total', Q(), Q()))
+    #secondary_axis.append((None, 'Total', Q(), Q()))
 
     primary_labels = [ ]
     for num, (pk, label, qobj, objrel_qobj, ) in enumerate(primary_axis):
@@ -93,11 +93,14 @@ def reporting(request):
         'aggregate': finance_core.reporting.build_table_aggregate,
         'annotate':  finance_core.reporting.build_table_annotate,
     }
-    if compute_method in compute_methods:
-        build_table = compute_methods[compute_method]
+    if compute_method == 'valannotate':
+        table = finance_core.reporting.build_table_valannotate(line_items, primary_field, secondary_field, primary_axis, secondary_axis, )
     else:
-        raise Http404("Unknown compute_method selected")
-    table = build_table(line_items, main_lineitem_limit_primary, primary_axis, primary_axis_objs, secondary_axis, )
+        if compute_method in compute_methods:
+            build_table = compute_methods[compute_method]
+        else:
+            raise Http404("Unknown compute_method selected")
+        table = build_table(line_items, main_lineitem_limit_primary, primary_axis, primary_axis_objs, secondary_axis, )
 
     debug = False
     if debug:

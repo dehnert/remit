@@ -24,6 +24,35 @@ def build_table_annotate(line_items, main_lineitem_limit_primary, primary_axis, 
 
     return table
 
+def build_table_valannotate(line_items, primary_field, secondary_field, primary_axis, secondary_axis, ):
+    # Setup
+    arcprimary = {}
+    arcsecondary = {}
+    table = []
+    zero = Decimal('0.00')
+    for num, (pk, label, qobj, objrel_qobj) in enumerate(primary_axis):
+        arcprimary[pk] = num
+        table.append([zero]*len(secondary_axis))
+    for num, (pk, label, qobj, objrel_qobj) in enumerate(secondary_axis):
+        arcsecondary[pk] = num
+
+    def lineitem_total(obj):
+        if obj['amount__sum'] is None: return zero
+        else: return obj['amount__sum']
+
+    # Do the real work
+    results = line_items.values(primary_field, secondary_field,).annotate(Sum('amount'))
+    for result in results:
+        print result
+        table[arcprimary[result[primary_field]]][arcsecondary[result[secondary_field]]] = lineitem_total(result)
+    #for num, (pk, label, qobj_lineitem, qobj_primary) in enumerate(secondary_axis):
+    #    secondary_results = (primary_axis_objs.filter(main_lineitem_limit_primary, qobj_primary, ).annotate(Sum('lineitem__amount')))
+    #    for cell in secondary_results:
+    #        #print cell, cell.pk, arcprimary[cell.pk], num, table[arcprimary[cell.pk]]
+    #        table[arcprimary[cell.pk]][num] = lineitem_total(cell)
+
+    return table
+
 def build_table_aggregate(line_items, main_lineitem_limit_primary, primary_axis, primary_axis_objs, secondary_axis):
     # This uses a simpler but probably slower method
     # In theory, if we grow unit tests, comparing this method with
@@ -42,17 +71,18 @@ def build_table_aggregate(line_items, main_lineitem_limit_primary, primary_axis,
     return table
 
 build_table = build_table_annotate
+build_table = build_table_aggregate
 
 
 def get_primary_axis(slug, base_area, term, ):
-    if slug in axes and axes[slug][2]:
-        return (axes[slug][0], ) + axes[slug][1](base_area, term, )
+    if slug in axes and axes[slug][3]:
+        return axes[slug][0:2] + axes[slug][2](base_area, term, )
     else:
         raise NotImplementedError
 
 def get_secondary_axis(slug, base_area, term, ):
-    if slug in axes and axes[slug][3]:
-        return (axes[slug][0], ) + axes[slug][1](base_area, term, )
+    if slug in axes and axes[slug][4]:
+        return axes[slug][0:2] + axes[slug][2](base_area, term, )
     else:
         raise NotImplementedError
 
@@ -102,8 +132,8 @@ def get_layers(base_area, term, ):
     return axis, None,
 
 axes = {
-    'budget-areas': ('Budget Areas',  get_budget_areas, True,  True,  ),
-    'budget-terms': ('Budget Terms',  get_budget_terms, True,  True,  ),
-    'layers':       ('Layers',        get_layers,       False, True,  ),
+    'budget-areas': ('Budget Areas', 'budget_area', get_budget_areas, True,  True,  ),
+    'budget-terms': ('Budget Terms', 'budget_term', get_budget_terms, True,  True,  ),
+    'layers':       ('Layers',       'layer',       get_layers,       False, True,  ),
 }
 
