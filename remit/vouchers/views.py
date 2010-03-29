@@ -53,6 +53,17 @@ class SelectRequestBasicsForm(Form):
     term = ModelChoiceField(queryset = BudgetTerm.objects.all())
 
 class DocUploadForm(ModelForm):
+    def clean_backing_file(self, ):
+        f = self.cleaned_data['backing_file']
+        ext = f.name.rsplit('.')[-1]
+        contenttype = f.content_type
+        if ext != 'pdf':
+            raise django.forms.ValidationError("Only PDF files are accepted --- you submitted a .%s file" % (ext, ))
+        elif contenttype != 'application/pdf':
+            raise django.forms.ValidationError("Only PDF files are accepted --- you submitted a %s file" % (contenttype, ))
+        else:
+            return f
+
     class Meta:
         model = Documentation
         fields = (
