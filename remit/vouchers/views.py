@@ -1,6 +1,7 @@
 import vouchers.models
 from vouchers.models import ReimbursementRequest, Documentation
 from finance_core.models import BudgetTerm, BudgetArea
+from util.shortcuts import get_403_response
 
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render_to_response, get_object_or_404
@@ -167,12 +168,22 @@ class VoucherizeForm(Form):
 @user_passes_test(lambda u: u.is_authenticated())
 def review_request(http_request, object_id):
     request_obj = get_object_or_404(ReimbursementRequest, pk=object_id)
+    user = http_request.user
+    pagename = 'request_reimbursement'
     new = False
     if 'new' in http_request.REQUEST:
         if http_request.REQUEST['new'].upper() == 'TRUE':
             new = True
         else:
             new = False
+
+    if (user.has_perm('vouchers.view_requests') or
+        user.username == request_obj.submitter or
+        user.email.upper() == request_obj.check_to_email.upper()
+        ):
+        pass
+    else:
+        return get_403_response(http_request, errmsg="You do not have permission to access this reimbursement request. You can only view requests you submitted or are the recipient for, unless you have general viewing permissions.", pagename=pagename, )
 
     # DOCUMENTATION #
     if request_obj.documentation:
@@ -246,17 +257,9 @@ def review_request(http_request, object_id):
         else:
             approve_form = VoucherizeForm(initial=initial)
 
-    # Display the content
-    if not (http_request.user.has_perm('vouchers.view_requests')
-        or http_request.user.username == request_obj.submitter):
-        # I'd probably use a 403, but that requires like writing
-        # a new template and stuff
-        # So I'm going to call this "don't leak information"
-        # and let it be
-        raise Http404
     context = {
         'rr':request_obj,
-        'pagename':'request_reimbursement',
+        'pagename':pagename,
         'new': new,
         'doc_form': doc_upload_form,
     }
