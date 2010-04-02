@@ -12,6 +12,7 @@ def display_tree(request):
     root = finance_core.models.BudgetArea.get_by_path(['Accounts'])
     return HttpResponse(root.dump_to_html())
 
+@user_passes_test(lambda u: u.has_perm('finance_core.use_reporting'))
 def reporting(request):
     compute_method = 'default'
     if 'compute_method' in request.REQUEST:

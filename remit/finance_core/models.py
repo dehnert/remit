@@ -105,6 +105,11 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
     def __unicode__(self,):
         return u"%s [%s] (%s)" % (self.name, self.contact_address(), self.always, )
 
+    class Meta:
+        permissions = (
+            ('use_reporting', 'Can use basic reporting functionality',),
+        )
+
 
 class BudgetTerm(models.Model):
     name = models.CharField(max_length=20)
