@@ -202,7 +202,7 @@ def review_request(http_request, object_id):
     else:
         new_docs = Documentation()
         new_docs.submitter = http_request.user.username
-        if http_request.method == 'POST': # If the form has been submitted...
+        if http_request.method == 'POST' and 'upload_documentation' in http_request.REQUEST: # If the form has been submitted...
             doc_upload_form = DocUploadForm(http_request.POST, http_request.FILES, instance=new_docs) # A form bound to the POST data
 
             if doc_upload_form.is_valid(): # All validation rules pass
