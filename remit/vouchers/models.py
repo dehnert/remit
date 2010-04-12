@@ -15,7 +15,7 @@ APPROVAL_STATES = (
 )
 
 class ReimbursementRequest(models.Model):
-    submitter = models.CharField(max_length=10) # MIT username of submitter
+    submitter = models.CharField(max_length=30) # Username of submitter
     check_to_first_name = models.CharField(max_length=50, verbose_name="check recipient's first name")
     check_to_last_name = models.CharField(max_length=50, verbose_name="check recipient's last name")
     check_to_email = models.EmailField(verbose_name="email address for check pickup")
@@ -123,7 +123,7 @@ class Voucher(models.Model):
 class Documentation(models.Model):
     backing_file = models.FileField(upload_to='documentation', verbose_name='File', help_text='PDF files only', )
     label = models.CharField(max_length=50, default="")
-    submitter = models.CharField(max_length=10, null=True, ) # MIT username of submitter
+    submitter = models.CharField(max_length=30, null=True, ) # Username of submitter
     upload_time = models.DateTimeField(default=datetime.datetime.now)
 
     def __unicode__(self, ):
