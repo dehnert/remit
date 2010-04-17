@@ -36,6 +36,9 @@ def login2Admin(br):
 
 def getLaTeX(br, latex_file, ):
     br.open(baseurl + 'vouchers/generate/')
+    if br.viewing_html():
+        print br.response().get_data()
+        assert not br.viewing_html()
     latex_file.write(br.response().get_data())
 
 if __name__ == '__main__':
