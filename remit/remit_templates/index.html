@@ -14,7 +14,9 @@ Remit is software that aims to help MIT student group manage their finances.
     {% if perms.vouchers.can_list %}
     <li><a href="{% url list_requests %}">List requests</a></li>
     {% endif %}
-    <li{% ifequal pagename "reporting" %} class='selected'{% endifequal %}><a href="{% url reporting %}">Reporting</a></li>
+    {% if perms.finance_core.use_reporting %}
+    <li><a href="{% url reporting %}">Reporting</a></li>
+    {% endif %}
 </ul>
 
 {% endblock %}
