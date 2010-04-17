@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from django.contrib.auth.views import login
+from django.contrib.auth.views import login, logout
 
 import settings
 
@@ -22,7 +22,8 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/(.*)', admin.site.root),
-    (r'^accounts/login/', login, ),
+    url(r'^accounts/login/',  login,  name='login', ),
+    url(r'^accounts/logout/', logout, name='logout', ),
 )
 
 if settings.DEBUG:

@@ -41,6 +41,22 @@ ul.tab-navigation li.selected
     z-index: 10;
 }
 
+#content > .curuser
+{
+    margin-top: -1em;
+    margin-right: -1em;
+    float: right;
+    background-color: #99f;
+    border: 1px solid #888;
+
+    text-align: right;
+    line-height: 100%;
+}
+#content > .curuser p
+{
+    margin: 0.2em;
+}
+
 /* Reset some stuff */
 h1, h2, h3, th
 {

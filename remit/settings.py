@@ -60,7 +60,7 @@ MEDIA_URL = SITE_WEB_PATH + '/media/'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = SITE_WEB_PATH + '/media/admin/'
 
-LOGIN_REDIRECT_URL  = SITE_WEB_PATH + '/accounts/profile'
+LOGIN_REDIRECT_URL  = SITE_WEB_PATH + '/'
 LOGIN_URL  = SITE_WEB_PATH + '/accounts/login'
 LOGOUT_URL = SITE_WEB_PATH + '/accounts/logout'
 

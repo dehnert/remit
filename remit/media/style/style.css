@@ -88,3 +88,8 @@ table.money-table th
     text-align: left;
     font-weight: normal;
 }
+
+span.username
+{
+    font-family: "Courier", monospace;
+}
