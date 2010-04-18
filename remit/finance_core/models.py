@@ -55,13 +55,17 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
         )
 
     @classmethod
-    def get_by_path(cls, path):
-        try:
-            root = BudgetArea.objects.get(name=path[0], depth=1)
-        except IndexError, e:
-            raise KeyError(e)
-        node = root
-        for name in path[1:]:
+    def get_by_path(cls, path, base=None, ):
+        if base:
+            node = base
+        else:
+            try:
+                root = BudgetArea.objects.get(name=path[0], depth=1)
+            except IndexError, e:
+                raise KeyError(e)
+            node = root
+            path = path[1:]
+        for name in path:
             try:
                 node = node.get_children().filter(name=name)[0]
             except IndexError, e:
@@ -69,9 +73,9 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
         return node
 
     @classmethod
-    def get_by_pathstr(cls, path):
+    def get_by_pathstr(cls, path, base=None):
         path = path.split('.')
-        return cls.get_by_path(path)
+        return cls.get_by_path(path, base=base, )
 
     def pathstr(self, skip=0):
         if self.depth-1 > skip:
