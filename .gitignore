@@ -5,3 +5,5 @@ django-treebeard-1.1.tar.gz
 local_settings.py
 local_settings_after.py
 database_settings
+client/settings.py
+remit/media/documentation/
