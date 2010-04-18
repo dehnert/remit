@@ -109,6 +109,7 @@ class BudgetArea(treebeard.mp_tree.MP_Node):
         permissions = (
             ('use_reporting', 'Can use basic reporting functionality',),
         )
+        ordering = ['path']
 
 
 class BudgetTerm(models.Model):
