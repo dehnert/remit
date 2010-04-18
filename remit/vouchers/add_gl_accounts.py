@@ -1,7 +1,7 @@
-if __name__ == '__main__':
-    import sys
-    import os
+import sys
+import os
 
+if __name__ == '__main__':
     cur_file = os.path.abspath(__file__)
     django_dir = os.path.abspath(os.path.join(os.path.dirname(cur_file), '..'))
     sys.path.append(django_dir)
@@ -9,6 +9,7 @@ if __name__ == '__main__':
 
 import finance_core.models
 import vouchers.models
+import finance_core.util
 
 expense_gls = (
     ('Travel', 420050),
@@ -32,24 +33,9 @@ def add_gl_accounts():
     except KeyError:
         base = finance_core.models.BudgetArea.get_by_path(['Accounts',])
         base = base.add_child(name='Expenses', always=True, use_owner=True)
+        base = finance_core.models.BudgetArea.get_by_path(['Accounts', 'Expenses', ])
+    finance_core.util.mass_add_accounts(base, expense_gls, writeto=sys.stdout)
 
-    for name, number in expense_gls:
-        try:
-            path = 'Accounts.Expenses.' + name
-            elem = finance_core.models.BudgetArea.get_by_pathstr(path)
-        except KeyError:
-            print "Adding %s (%s)" % (name, number,)
-            # It doesn't exist
-            if '.' in name:
-                parts = name.rsplit('.', 1)
-                path = 'Accounts.Expenses.'+parts[0]
-                name = parts[1]
-                parent = finance_core.models.BudgetArea.get_by_pathstr(path)
-            else:
-                parent = base
-            parent.add_child(name=name, account_number=number, always=True, )
-        else:
-            print "%s (%s) already present" % (name, number,)
 
 if __name__ == '__main__':
     add_gl_accounts()
