@@ -1,0 +1,34 @@
+#!/usr/bin/python
+import sys
+import os
+
+if __name__ == '__main__':
+    cur_file = os.path.abspath(__file__)
+    django_dir = os.path.abspath(os.path.join(os.path.dirname(cur_file), '..'))
+    sys.path.append(django_dir)
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
+import finance_core.models
+import finance_core.util
+
+if __name__ == '__main__':
+    print sys.argv
+    if len(sys.argv) > 1:
+        base = finance_core.models.BudgetArea.get_by_pathstr(sys.argv[1])
+    accounts = []
+    for line in sys.stdin:
+        data = line.strip().split('\t')
+        if len(data) == 0:
+            # Can this happen?
+            # If it does, skip
+            pass
+        elif len(data) == 1:
+            # Just a name. Append None for no account
+            data.append(None)
+            accounts.append(data)
+        elif len(data) == 2:
+            name, number = data
+            accounts.append((name, int(number)))
+        else:
+            raise ValueError("Must pass one or two values per line")
+    finance_core.util.mass_add_accounts(base, accounts, writeto=sys.stdout)
