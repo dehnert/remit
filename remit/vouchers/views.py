@@ -35,7 +35,7 @@ class RequestForm(ModelForm):
 
 class CommitteesField(ModelChoiceField):
     def __init__(self, *args, **kargs):
-        base_area = BudgetArea.get_by_path(['Accounts', 'Assets', 'Budget', ])
+        base_area = BudgetArea.get_by_path(settings.BASE_COMMITTEE_PATH)
         self.strip_levels = base_area.depth
         areas = (base_area.get_descendants()
             .filter(depth__lte=base_area.depth+2)

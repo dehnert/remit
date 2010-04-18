@@ -27,6 +27,8 @@ DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
+BASE_COMMITTEE_PATH = ['Accounts', 'Assets', ]
+
 from local_settings import *
 
 # Local time zone for this installation. Choices can be found here:
