@@ -8,7 +8,7 @@ class BudgetAreaAdmin(admin.ModelAdmin):
 
 class BudgetTermAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'start_date', 'end_date', 'submit_deadline', )
+    list_display = ('name', 'slug', 'start_date', 'end_date', 'submit_deadline', )
 
 
 class BudgetAreaTermAdmin(admin.ModelAdmin):
