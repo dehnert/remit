@@ -66,8 +66,16 @@
     <td>{{ rr.approval_status|approval_status }} ({{ rr.approval_time }})</td>
 </tr>
 <tr>
-    <th>Printing Time</th>
-    <td>{{rr.printing_time}}</td>
+    <th>Voucher Processing Time</th>
+    {%if rr.voucher%}
+    {%if rr.voucher.process_time%}
+    <td>{{rr.voucher.process_time}}</td>
+    {%else%}
+    <td>Not yet processed</td>
+    {%endif%}
+    {%else%}
+    <td>Not yet approved</td>
+    {%endif%}
 </tr>
 </table>
 

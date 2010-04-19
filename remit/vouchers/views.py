@@ -24,6 +24,7 @@ class RequestForm(ModelForm):
         fields = (
             'name',
             'description',
+            'incurred_time',
             'amount',
             'budget_area',
             'expense_area',
@@ -32,6 +33,7 @@ class RequestForm(ModelForm):
             'check_to_email',
             'check_to_addr',
         )
+
 
 class CommitteesField(ModelChoiceField):
     def __init__(self, *args, **kargs):
@@ -326,7 +328,6 @@ def generate_vouchers(http_request, *args):
 
     if mark:
         for voucher in lst:
-            voucher.processed = True
-            voucher.save()
+            voucher.mark_processed()
 
     return response

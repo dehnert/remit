@@ -24,13 +24,14 @@ class ReimbursementRequest(models.Model):
     budget_area = models.ForeignKey(BudgetArea, related_name='as_budget_area')
     budget_term = models.ForeignKey(BudgetTerm)
     expense_area = models.ForeignKey(BudgetArea, related_name='as_expense_area') # ~GL
+    incurred_time = models.DateTimeField(default=datetime.datetime.now, help_text='Time the item or service was purchased')
     request_time = models.DateTimeField(default=datetime.datetime.now)
     approval_time = models.DateTimeField(blank=True, null=True,)
     approval_status = models.IntegerField(default=0, choices=APPROVAL_STATES)
-    printing_time = models.DateTimeField(blank=True, null=True,)
     name = models.CharField(max_length=50, verbose_name='short description', )
     description = models.TextField(blank=True, verbose_name='long description', )
     documentation = models.ForeignKey('Documentation', null=True, )
+    voucher       = models.ForeignKey('Voucher',       null=True, )
 
     class Meta:
         permissions = (
@@ -72,9 +73,11 @@ class ReimbursementRequest(models.Model):
             self.budget_area,
             self.expense_area,
             self.description,
+            self.incurred_time,
         )
         self.approval_status = 1
         self.approval_time = datetime.datetime.now()
+        self.voucher = voucher
         self.save()
 
     def label(self, ):
@@ -93,6 +96,7 @@ class Voucher(models.Model):
     description = models.TextField()
     gl = models.IntegerField()
     processed = models.BooleanField()
+    process_time = models.DateTimeField(blank=True, null=True,)
     documentation = models.ForeignKey('Documentation', blank=True, null=True, )
 
     def mailing_addr_lines(self):
@@ -104,6 +108,11 @@ class Voucher(models.Model):
             lst = []
         lst = lst + ['']*(3-len(lst))
         return lst
+
+    def mark_processed(self, ):
+        self.process_time = datetime.datetime.now()
+        self.processed = True
+        self.save()
 
     def __unicode__(self, ):
         return "%s: %s %s (%s) for $%s" % (

@@ -118,7 +118,9 @@ def do_process_rows(committees, budget, term, depth):
             amount = Decimal(subtotal.replace('$', '').replace(',', ''))
             finance_core.models.make_transfer(
                 item_name, amount, budget_layer,
-                term, budget_source, line_item_obj, desc=desc)
+                term, budget_source, line_item_obj, desc=desc,
+                incurred_time=None,
+            )
 
 
 def main(default_addr, committees_file, budget_file, term_name, ):

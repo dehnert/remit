@@ -2,6 +2,7 @@ from django.db import models, connection
 import settings
 import treebeard.mp_tree
 
+import datetime
 
 class BudgetArea(treebeard.mp_tree.MP_Node):
     indent_str = u"\u00A0\u00A0"
@@ -143,15 +144,19 @@ class BudgetAreaTerm(models.Model):
 class Transaction(models.Model):
     name = models.CharField(max_length=40)
     desc = models.TextField(blank=True)
+    incurred_time  = models.DateTimeField(default=datetime.datetime.now, help_text='Time the item or service was purchased')
+    tx_create_time = models.DateTimeField(default=datetime.datetime.now)
 
     def __unicode__(self,):
         return self.name
 
 def make_transfer(name, amount,
-    layer, budget_term, from_area, to_area, desc, ):
+    layer, budget_term, from_area, to_area, desc,
+    incurred_time, ):
     tx = Transaction(
         name=name,
         desc=desc,
+        incurred_time=incurred_time,
     )
     tx.save()
 
