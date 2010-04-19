@@ -14,3 +14,4 @@
     * First argument: path to the base account --- for example, "Accounts.Assets"
     * Standard input: accounts to add, separated by newline (to specify account numbers, add a tab followed by the account number)
 7.  Use the admin interface to set up appropriate BudgetTerm(s)
+8.  Make sure that the remit/media/ directory gets served to the web as media
