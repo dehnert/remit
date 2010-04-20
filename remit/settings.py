@@ -29,6 +29,8 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 
 BASE_COMMITTEE_PATH = ['Accounts', 'Assets', ]
 
+AUTH_SOCK = None # Path to SocketAuth socket
+
 from local_settings import *
 
 # Local time zone for this installation. Choices can be found here:
@@ -82,10 +84,12 @@ MIDDLEWARE_CLASSES = (
     'mit.ScriptsRemoteUserMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'mit.ScriptsRemoteUserBackend',
     'django.contrib.auth.backends.ModelBackend',
-)
+]
+if AUTH_SOCK:
+    AUTHENTICATION_BACKENDS.insert(1, 'util.SocketAuth.SocketAuthBackend')
 
 ROOT_URLCONF = 'remit.urls'
 
