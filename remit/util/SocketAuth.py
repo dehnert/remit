@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import auth
 import socket
 import settings
 
@@ -43,6 +45,10 @@ class SocketAuthBackend():
                 user.last_name = last
                 user.email = email
                 user.save()
+                try:
+                    user.groups.add(auth.models.Group.objects.get(name='autocreated'))
+                except ObjectDoesNotExist:
+                    print "Failed to retrieve autocreated group"
                 return user
         return None
 
