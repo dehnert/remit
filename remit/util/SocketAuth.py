@@ -3,6 +3,21 @@ import socket
 import settings
 
 class SocketAuthBackend():
+    """
+    SocketAuthBackend provides a simple way to authenticate with another process.
+
+    The protocol is simple:
+    * Open a connection to a socket.
+    * On the first line, pass the name of the operation
+    * Then, on successive lines, pass additional arguments, one per line
+    * Close the write half of the socket
+    * The authentication server sends back a reply, one tuple element
+      per line
+
+    Queries include:
+    * AUTHENTICATE(username, password) => boolean
+    * FINGER(username) => (first name, last name, email, )
+    """
     def authenticate(self, username, password, ):
         (result,) = query("AUTHENTICATE", username, password, )
         print result
