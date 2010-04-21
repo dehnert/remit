@@ -84,7 +84,7 @@ class ReimbursementRequest(models.Model):
         return settings.GROUP_ABBR + unicode(self.pk) + 'RR'
 
 class Voucher(models.Model):
-    group_name = models.CharField(max_length=10)
+    group_name = models.CharField(max_length=40)
     account = models.IntegerField()
     signatory = models.CharField(max_length=50)
     signatory_email = models.EmailField()
