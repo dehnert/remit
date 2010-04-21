@@ -23,6 +23,7 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
 
 class VoucherAdmin(admin.ModelAdmin):
     list_display = ('processed', 'description', 'signatory', 'first_name', 'last_name', 'amount', 'account', 'gl', )
+    list_display_links = ('description', )
 
 admin.site.register(vouchers.models.ReimbursementRequest, ReimbursementRequestAdmin)
 admin.site.register(vouchers.models.Voucher, VoucherAdmin)
