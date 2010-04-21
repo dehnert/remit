@@ -30,6 +30,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 BASE_COMMITTEE_PATH = ['Accounts', 'Assets', ]
 
 AUTH_SOCK = None # Path to SocketAuth socket
+ENABLE_SCRIPTS_AUTH = True
 
 from local_settings import *
 
@@ -75,21 +76,22 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     #http://docs.djangoproject.com/en/dev/howto/auth-remote-user/
     #'django.contrib.auth.middleware.RemoteUserMiddleware',
-    'mit.ScriptsRemoteUserMiddleware',
-)
+]
 
 AUTHENTICATION_BACKENDS = [
-    'mit.ScriptsRemoteUserBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 if AUTH_SOCK:
     AUTHENTICATION_BACKENDS.insert(1, 'util.SocketAuth.SocketAuthBackend')
+if ENABLE_SCRIPTS_AUTH:
+    MIDDLEWARE_CLASSES.append('mit.ScriptsRemoteUserMiddleware')
+    AUTHENTICATION_BACKENDS.insert(0, 'mit.ScriptsRemoteUserBackend')
 
 ROOT_URLCONF = 'remit.urls'
 
