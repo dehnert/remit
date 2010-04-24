@@ -1,4 +1,4 @@
-import vouchers
+import vouchers.models
 from django.contrib import admin
 
 
