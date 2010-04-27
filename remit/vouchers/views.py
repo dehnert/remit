@@ -40,7 +40,7 @@ class CommitteesField(ModelChoiceField):
         base_area = BudgetArea.get_by_path(settings.BASE_COMMITTEE_PATH)
         self.strip_levels = base_area.depth
         areas = (base_area.get_descendants()
-            .filter(depth__lte=base_area.depth+2)
+            .filter(depth__lte=base_area.depth+settings.COMMITTEE_HIERARCHY_LEVELS)
             .exclude(name='Holding')
         )
         ModelChoiceField.__init__(self, queryset=areas,

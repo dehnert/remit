@@ -25,6 +25,7 @@ DATABASE_HOST = ''             # Set to empty string for localhost. Not used wit
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 BASE_COMMITTEE_PATH = ['Accounts', 'Assets', ]
+COMMITTEE_HIERARCHY_LEVELS = 2
 
 AUTH_SOCK = None # Path to SocketAuth socket
 ENABLE_SCRIPTS_AUTH = True
