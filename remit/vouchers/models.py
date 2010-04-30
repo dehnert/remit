@@ -30,7 +30,7 @@ class ReimbursementRequest(models.Model):
     approval_status = models.IntegerField(default=0, choices=APPROVAL_STATES)
     name = models.CharField(max_length=50, verbose_name='short description', )
     description = models.TextField(blank=True, verbose_name='long description', )
-    documentation = models.ForeignKey('Documentation', null=True, )
+    documentation = models.ForeignKey('Documentation', null=True, blank=True, )
     voucher       = models.ForeignKey('Voucher',       null=True, )
 
     class Meta:
