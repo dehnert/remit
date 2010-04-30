@@ -19,7 +19,8 @@ class ReimbursementRequestAdmin(admin.ModelAdmin):
         ('Request metadata', {'fields': ['submitter', 'request_time', 'approval_time', 'approval_status', ]}),
         ('Recipient', {'fields': ['check_to_first_name', 'check_to_last_name', 'check_to_email', 'check_to_addr', ] }),
     ]
-    list_display = ('name', 'submitter', 'check_to_first_name', 'check_to_last_name', 'amount', 'budget_area', 'budget_term', )
+    list_display = ('id', 'name', 'submitter', 'check_to_first_name', 'check_to_last_name', 'amount', 'budget_area', 'budget_term', )
+    list_display_links = ('id', 'name', )
 
 class VoucherAdmin(admin.ModelAdmin):
     list_display = ('processed', 'description', 'signatory', 'first_name', 'last_name', 'amount', 'account', 'gl', )
