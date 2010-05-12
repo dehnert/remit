@@ -148,6 +148,8 @@ def submit_request(http_request, term, committee):
             for name, addr in settings.ADMINS:
                 recipients.append(addr)
             recipients.append(request_obj.budget_area.owner_address())
+            if settings.CC_SUBMITTER:
+                recipients.append(http_request.user.email)
             send_mail(
                 '%sRequest submittal: %s requested $%s' % (
                     settings.EMAIL_SUBJECT_PREFIX,

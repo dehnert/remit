@@ -15,6 +15,8 @@ GROUP_NAME = 'Remit'
 GROUP_ABBR = 'RM'
 SIGNATORY_EMAIL = None
 
+CC_SUBMITTER = False
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
