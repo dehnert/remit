@@ -307,7 +307,11 @@ def generate_vouchers(http_request, *args):
         'vouchers': lst,
         'MEDIA_ROOT': settings.MEDIA_ROOT,
     }
-    response = render_to_response('vouchers/vouchers.tex', context, context_instance=RequestContext(http_request), )
+    response = render_to_response(
+        'vouchers/vouchers.tex',
+        context, context_instance=RequestContext(http_request),
+        mimetype=settings.LATEX_MIMETYPE,
+    )
 
     # Send mail
     tmpl = get_template('vouchers/emails/vouchers_tex.txt')

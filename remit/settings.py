@@ -30,6 +30,10 @@ COMMITTEE_HIERARCHY_LEVELS = 2
 AUTH_SOCK = None # Path to SocketAuth socket
 ENABLE_SCRIPTS_AUTH = True
 
+# Arguably usual MIME type; text/plain, while wrong, might work better by not
+# making browsers want to open in an external application
+LATEX_MIMETYPE = 'application/x-latex'
+
 from local_settings import *
 
 # Local time zone for this installation. Choices can be found here:
