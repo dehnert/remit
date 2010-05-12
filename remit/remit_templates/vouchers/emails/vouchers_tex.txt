@@ -1,4 +1,5 @@
 {% load misc %}
+{% autoescape off %}
 Dear admins,
 
 User '{{converter}}' ({{converter.first_name}} {{converter.last_name}} --- {{converter.email}}) just converted vouchers to LaTeX.
@@ -19,3 +20,4 @@ Description: {{f.description}}
 
 Thanks,
 Remit
+{% endautoescape %}

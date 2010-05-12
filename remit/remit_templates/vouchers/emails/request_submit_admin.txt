@@ -1,4 +1,5 @@
 {% load misc %}
+{% autoescape off %}
 User '{{submitter}}' ({{submitter.first_name}} {{submitter.last_name}} --- {{submitter.email}}) just submitted a request.
 
 Request ID:         {{request.label}}
@@ -20,3 +21,4 @@ Check Address:
 
 Thanks,
 Remit
+{% endautoescape %}

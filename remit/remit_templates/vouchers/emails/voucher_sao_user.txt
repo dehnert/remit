@@ -1,3 +1,4 @@
+{% autoescape off %}
 Hi {{request.check_to_first_name}} {{ request.check_to_last_name }},
    Your reimbursement request has been delivered to SAO for processing. You should be notified that your check is ready for pickup (or has been mailed) in the next week or so.
 
@@ -11,3 +12,4 @@ Request Time:       {{request.request_time}}
 
 Thanks,
 {{ sender }}
+{% endautoescape %}

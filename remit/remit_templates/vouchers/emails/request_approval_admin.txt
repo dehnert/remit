@@ -1,4 +1,5 @@
 {% load misc %}
+{% autoescape off %}
 Dear admins,
 
 User '{{approver}}' ({{approver.first_name}} {{approver.last_name}} --- {{approver.email}}) just approved a request.
@@ -22,3 +23,4 @@ Check Address:
 
 Thanks,
 Remit
+{% endautoescape %}

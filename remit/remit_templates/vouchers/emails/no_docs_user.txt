@@ -1,3 +1,4 @@
+{% autoescape off %}
 Hi {{request.check_to_first_name}} {{ request.check_to_last_name }},
    While attempting to process your reimbursement request (see below for details), we were unable to find any documentation of your reimbursement request. Please be sure you have submitted receipts or other appropriate documentation.
 
@@ -11,3 +12,4 @@ Request Time:       {{request.request_time}}
 
 Thanks,
 {{ sender }}
+{% endautoescape %}
