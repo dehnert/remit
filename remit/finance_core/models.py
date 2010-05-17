@@ -142,7 +142,7 @@ class BudgetAreaTerm(models.Model):
 
 
 class Transaction(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=60)
     desc = models.TextField(blank=True)
     incurred_time  = models.DateTimeField(default=datetime.datetime.now, help_text='Time the item or service was purchased')
     tx_create_time = models.DateTimeField(default=datetime.datetime.now)
