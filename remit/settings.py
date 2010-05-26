@@ -10,9 +10,9 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Remit team', 'remit@mit.edu'),
+    ('Remit team', 'remit-default-addr@mit.edu'),
 )
-SERVER_EMAIL = 'remit@mit.edu'
+SERVER_EMAIL = 'remit-default-addr@mit.edu'
 
 GROUP_NAME = 'Remit'
 GROUP_ABBR = 'RM'
