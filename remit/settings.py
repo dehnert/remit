@@ -6,6 +6,9 @@ SITE_ROOT = os.path.normpath(os.path.dirname(__file__))
 SITE_WEB_PATH = ''
 DEFAULT_DOMAIN = 'mit.edu'
 
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
 ADMINS = (
     ('Remit team', 'remit@mit.edu'),
 )
