@@ -14,11 +14,27 @@ import vouchers.models
 import util.add_gl_accounts
 import finance_core.util
 
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
+
+
 base_structure = (
     ('Assets', None, ),
     ('Expenses', None, ),
     ('Income', None, ),
 )
+
+def get_or_create_group(name):
+    try:
+        group = Group.objects.get(name=name, )
+    except Group.DoesNotExist:
+        group = Group(name=name, )
+        group.save()
+    return group
+
+def grant_by_codename(principal, codename):
+    principal.permissions.add(Permission.objects.get(codename=codename, ))
 
 if __name__ == '__main__':
     if len(finance_core.models.BudgetArea.objects.filter(depth=1)) == 0:
@@ -27,3 +43,15 @@ if __name__ == '__main__':
         base = finance_core.models.BudgetArea.get_by_path(['Accounts',])
     finance_core.util.mass_add_accounts(base, base_structure, sys.stdout, )
     util.add_gl_accounts.add_gl_accounts()
+
+    # Do the various auth setup
+    get_or_create_group('autocreated')
+    get_or_create_group('mit')
+    treasurers = get_or_create_group('treasurers')
+    treasurer_perms = Permission.objects.filter(content_type__app_label__in=['vouchers', 'finance_core', ],)
+    for perm in treasurer_perms:
+        treasurers.permissions.add(perm)
+    treasurers.save()
+    downloader = get_or_create_group('downloader')
+    grant_by_codename(downloader, 'generate_vouchers', )
+    downloader.save()
