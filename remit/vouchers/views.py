@@ -343,6 +343,20 @@ def generate_vouchers(http_request, *args):
 def get_related_requests_qobj(user, ):
     return Q(submitter=user.username) | Q(check_to_email=user.email)
 
+request_list_orders = (
+#   Name            Label               Columns
+    ('default',     'Default',          ()),
+    ('id',          'ID',               ('id', )),
+    ('state',       'Approval Status',  ('approval_status', )),
+    ('stateamount', 'Approval Status, then amount',  ('approval_status', 'amount', )),
+    ('stateto',     'Approval Status, then recipient',  ('approval_status', 'check_to_first_name', 'check_to_last_name', )),
+    ('statesubmit', 'Approval Status, then submitter',  ('approval_status', 'submitter', )),
+    ('name',        'Request Name',     ('name', )),
+    ('amount',      'Amount',           ('amount', )),
+    ('check_to',    'Check Recipient',  ('check_to_first_name', 'check_to_last_name', )),
+    ('submitter',   'Submitter',        ('submitter', )),
+)
+
 @login_required
 def show_requests(request, ):
     if request.user.has_perm('vouchers.can_list'):
@@ -352,11 +366,24 @@ def show_requests(request, ):
         qs = ReimbursementRequest.objects.filter(get_related_requests_qobj(request.user))
         useronly = True
 
+    if 'order' in request.REQUEST:
+        order_row = [row for row in request_list_orders if row[0] == request.REQUEST['order']]
+        if order_row:
+            order, label, cols = order_row[0]
+            qs = qs.order_by(*cols)
+        else:
+            raise Http404('Order by constraint not known')
+    else:
+        order = 'default'
+
+
     return list_detail.object_list(
         request,
         queryset=qs,
         extra_context={
             'useronly': useronly,
+            'order'   : order,
+            'orders'  : request_list_orders,
             'pagename': 'list_requests',
         },
     )

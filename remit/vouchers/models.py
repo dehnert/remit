@@ -39,6 +39,7 @@ class ReimbursementRequest(models.Model):
             ('can_approve', 'Can approve requests',),
             ('can_email', 'Can send mail about requests',),
         )
+        ordering = ['id', ]
 
     def __unicode__(self, ):
         return "%s: %s %s (%s) (by %s) for $%s" % (

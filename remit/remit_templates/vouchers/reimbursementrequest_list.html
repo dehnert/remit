@@ -12,6 +12,24 @@
 <p>You have permission to list all vouchers.</p>
 {%endif%}
 
+<form>
+<table class='pretty-table'>
+<tr>
+    <th>Order</th>
+    <td><select name='order'>
+    {% for name,label,cols in orders %}
+    <option value='{{name}}'{%ifequal order name%} selected='selected'{%endifequal%}>{{label}}</option>
+    {% endfor %}
+    </select></td>
+</tr>
+<tr>
+    <th colspan='2'><input type='submit' name='submit' value='Submit'></th>
+</tr>
+</table>
+</form>
+
+<p><br /></p>
+
 <table class='pretty-table'>
 <tr>
     <th>#</th>
