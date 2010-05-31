@@ -3,7 +3,7 @@ from vouchers.models import ReimbursementRequest, Documentation
 from finance_core.models import BudgetTerm, BudgetArea
 from util.shortcuts import get_403_response
 
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect
@@ -13,8 +13,10 @@ from django.forms import ModelForm
 from django.forms import ModelChoiceField
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail, mail_admins
+from django.db.models import Q
 from django.template import Context, Template
 from django.template.loader import get_template
+from django.views.generic import list_detail
 
 import settings
 
@@ -337,3 +339,24 @@ def generate_vouchers(http_request, *args):
             voucher.mark_processed()
 
     return response
+
+def get_related_requests_qobj(user, ):
+    return Q(submitter=user.username) | Q(check_to_email=user.email)
+
+@login_required
+def show_requests(request, ):
+    if request.user.has_perm('vouchers.can_list'):
+        qs = ReimbursementRequest.objects.all()
+        useronly = False
+    else:
+        qs = ReimbursementRequest.objects.filter(get_related_requests_qobj(request.user))
+        useronly = True
+
+    return list_detail.object_list(
+        request,
+        queryset=qs,
+        extra_context={
+            'useronly': useronly,
+            'pagename': 'list_requests',
+        },
+    )

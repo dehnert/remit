@@ -6,6 +6,12 @@
 
 <h2>List Reimbursement Requests</h2>
 
+{%if useronly%}
+<p>Displaying only vouchers related to you.</p>
+{%else%}
+<p>You have permission to list all vouchers.</p>
+{%endif%}
+
 <table class='pretty-table'>
 <tr>
     <th>#</th>
