@@ -376,6 +376,22 @@ def show_requests(request, ):
     else:
         order = 'default'
 
+    if 'approval_status' in request.REQUEST:
+        approval_status = request.REQUEST['approval_status']
+    else:
+        approval_status = vouchers.models.APPROVAL_STATE_PENDING
+    if approval_status == 'all':
+        pass
+    else:
+        try:
+            approval_status = int(approval_status)
+        except ValueError:
+            raise Http404('approval_status poorly formatted')
+        state_row = [row for row in vouchers.models.APPROVAL_STATES if row[0] == approval_status]
+        if state_row:
+            qs = qs.filter(approval_status=approval_status)
+        else:
+            raise Http404('approval_status not known')
 
     return list_detail.object_list(
         request,
@@ -384,6 +400,8 @@ def show_requests(request, ):
             'useronly': useronly,
             'order'   : order,
             'orders'  : request_list_orders,
+            'approval_status' : approval_status,
+            'approval_states':  vouchers.models.APPROVAL_STATES,
             'pagename': 'list_requests',
         },
     )

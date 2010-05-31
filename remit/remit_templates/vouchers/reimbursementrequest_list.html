@@ -15,6 +15,15 @@
 <form>
 <table class='pretty-table'>
 <tr>
+    <th>Approval Status</th>
+    <td><select name='approval_status'>
+    <option value='all'{%ifequal approval_status "all"%} selected='selected'{%endifequal%}>All</option>
+    {% for id,label in approval_states %}
+    <option value='{{id}}'{%ifequal approval_status id%} selected='selected'{%endifequal%}>{{label}}</option>
+    {% endfor %}
+    </select></td>
+</tr>
+<tr>
     <th>Order</th>
     <td><select name='order'>
     {% for name,label,cols in orders %}
