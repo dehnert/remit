@@ -23,5 +23,11 @@ def approval_status_class(value):
         if num == value: return name.lower()
     else: return value
 
+@register.filter
+def sign(value):
+    if value > 0: return 'positive'
+    elif value < 0: return 'negative'
+    else: return 'zero'
+
 register.filter('layer_num', finance_core.models.layer_num)
 register.filter('layer_name', finance_core.models.layer_name)

@@ -88,6 +88,8 @@ table.money-table th
     text-align: left;
     font-weight: normal;
 }
+table.money-table .positive { color: green; }
+table.money-table .negative { color: red;   }
 
 span.username
 {
