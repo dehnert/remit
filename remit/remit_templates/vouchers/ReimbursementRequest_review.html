@@ -117,6 +117,9 @@
 {% if approve_message %}
 <p>{{ approve_message }}</p>
 {% else %}
+{% if perms.vouchers.edit_reimbursementrequest %}
+<p>Optionally, <a href='{% url admin:vouchers_reimbursementrequest_change rr.pk %}'>change this request first</a>.</p>
+{% endif %}
 <form method="post" action="">
 <table class='pretty-table'>
 {{ approve_form.as_table }}

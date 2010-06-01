@@ -16,6 +16,9 @@
         {% if perms.finance_core.use_reporting %}
         <li{% ifequal pagename "reporting" %} class='selected'{% endifequal %}><a href="{% url reporting %}">Reporting</a></li>
         {% endif %}
+        {% if user.is_staff %}
+        <li><a href='{% url admin:index %}'>Django Admin</a></li>
+        {% endif %}
     </ul>
     <div id='content'>
         {% if user.is_authenticated %}
