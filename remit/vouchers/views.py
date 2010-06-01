@@ -18,6 +18,8 @@ from django.template import Context, Template
 from django.template.loader import get_template
 from django.views.generic import list_detail
 
+import decimal
+
 import settings
 
 class RequestForm(ModelForm):
@@ -307,8 +309,13 @@ def generate_vouchers(http_request, *args):
     if unprocessed:
         lst = lst.filter(processed=False)
 
+    total = decimal.Decimal('0.00')
+    for voucher in lst:
+        total = total + voucher.amount
+
     context = {
         'vouchers': lst,
+        'total': total,
         'MEDIA_ROOT': settings.MEDIA_ROOT,
     }
     response = render_to_response(
