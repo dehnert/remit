@@ -52,8 +52,13 @@
 {% for object in object_list %}
 <tr>
     <td><a href='{% url review_request object.pk %}'>{{ object.pk }}</a></td>
-    <td><a href='{% url review_request object.pk %}'>{{ object.name }}</a></td>
-    <td>${{ object.amount }}</td>
+    <td>
+        <a href='{% url review_request object.pk %}'>{{ object.name }}</a>
+        {% if object.documentation %}<br />(has docs){%endif%}
+    </td>
+    <td>
+        ${{ object.amount }}
+    </td>
     <td>
         {{ object.check_to_first_name }} {{ object.check_to_last_name }}<br />
         <a href='mailto:{{ object.check_to_email }}'>{{ object.check_to_email }}</a><br />
