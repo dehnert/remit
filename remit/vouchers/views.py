@@ -366,6 +366,7 @@ request_list_orders = (
 
 @login_required
 def show_requests(request, ):
+    # PERMISSION-BASED REQUEST FILTERING
     if request.user.has_perm('vouchers.can_list'):
         qs = ReimbursementRequest.objects.all()
         useronly = False
@@ -373,6 +374,7 @@ def show_requests(request, ):
         qs = ReimbursementRequest.objects.filter(get_related_requests_qobj(request.user))
         useronly = True
 
+    # SORTING
     if 'order' in request.REQUEST:
         order_row = [row for row in request_list_orders if row[0] == request.REQUEST['order']]
         if order_row:
@@ -383,6 +385,7 @@ def show_requests(request, ):
     else:
         order = 'default'
 
+    # DISCRETIONARY REQUEST FILTERING
     if 'approval_status' in request.REQUEST:
         approval_status = request.REQUEST['approval_status']
     else:
@@ -400,6 +403,7 @@ def show_requests(request, ):
         else:
             raise Http404('approval_status not known')
 
+    # GENERATE THE REQUEST
     return list_detail.object_list(
         request,
         queryset=qs,
