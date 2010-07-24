@@ -256,21 +256,10 @@ def review_request(http_request, object_id):
         if http_request.method == 'POST' and 'approve' in http_request.REQUEST:
             approve_form = VoucherizeForm(http_request.POST)
             if approve_form.is_valid():
-                voucher = request_obj.convert(
-                    approve_form.cleaned_data['name'],
-                    signatory_email=approve_form.cleaned_data['email'],)
-                tmpl = get_template('vouchers/emails/request_approval_admin.txt')
-                ctx = Context({
-                    'approver': http_request.user,
-                    'request': request_obj,
-                })
-                body = tmpl.render(ctx)
-                mail_admins(
-                    'Request approval: %s approved $%s' % (
-                        http_request.user,
-                        request_obj.amount,
-                    ),
-                    body,
+                request_obj.approve(
+                    approver=http_request.user,
+                    signatory_name=approve_form.cleaned_data['name'],
+                    signatory_email=approve_form.cleaned_data['email'],
                 )
                 approve_message = 'Created new voucher from request'
         else:

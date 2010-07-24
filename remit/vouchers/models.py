@@ -3,6 +3,10 @@ import settings
 import finance_core
 from finance_core.models import BudgetArea, BudgetTerm
 
+from django.core.mail import send_mail, mail_admins
+from django.template import Context, Template
+from django.template.loader import get_template
+
 import datetime
 
 APPROVAL_STATE_PENDING = 0
@@ -51,7 +55,9 @@ class ReimbursementRequest(models.Model):
             self.amount,
         )
 
-    def convert(self, signatory, signatory_email=settings.SIGNATORY_EMAIL):
+    def convert(self, signatory, signatory_email=None):
+        if signatory_email is None:
+            signatory_email = settings.SIGNATORY_EMAIL
         voucher = Voucher()
         voucher.group_name = settings.GROUP_NAME
         voucher.account = self.budget_area.get_account_number()
@@ -80,6 +86,28 @@ class ReimbursementRequest(models.Model):
         self.approval_time = datetime.datetime.now()
         self.voucher = voucher
         self.save()
+
+    def approve(self, approver, signatory_name, signatory_email=None, ):
+        """Mark a request as approved.
+
+        approver:       user object of the approving user
+        signatory_name: name of signatory
+        signatory_email: email address of signatory (provide None for default)
+        """
+        voucher = self.convert(signatory_name, signatory_email,)
+        tmpl = get_template('vouchers/emails/request_approval_admin.txt')
+        ctx = Context({
+            'approver': approver,
+            'request': self,
+        })
+        body = tmpl.render(ctx)
+        mail_admins(
+            'Request approval: %s approved $%s' % (
+                approver,
+                self.amount,
+            ),
+            body,
+        )
 
     def label(self, ):
         return settings.GROUP_ABBR + unicode(self.pk) + 'RR'
