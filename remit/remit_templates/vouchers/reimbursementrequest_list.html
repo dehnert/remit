@@ -39,7 +39,9 @@
 
 <p><br /></p>
 
-<table class='pretty-table'>
+<form method='post' action=''>
+
+<table class='pretty-table' id='request-list'>
 <tr>
     <th>#</th>
     <th>Name</th>
@@ -48,10 +50,12 @@
     <th>Accounts</th>
     <th>Approval state (date)</th>
 </tr>
-
 {% for object in object_list %}
 <tr>
-    <td><a href='{% url review_request object.pk %}'>{{ object.pk }}</a></td>
+    <td>
+        <input type='checkbox' name='select' value='{{object.pk}}'{%ifin object.pk selected_ids %} checked='checked'{%endifin%}></input>
+        <a href='{% url review_request object.pk %}'>{{ object.pk }}</a>
+    </td>
     <td>
         <a href='{% url review_request object.pk %}'>{{ object.name }}</a>
         {% if object.documentation %}<br />(has docs){%endif%}
@@ -75,5 +79,31 @@
 </tr>
 {% endfor %}
 </table>
+
+<p>Bulk action:
+    <select name='action'>
+        <option value="none" selected="selected">-----------</option>
+        {% for action in actions %}
+        <option value='{{action.name}}'>{{action.label}}</option>
+        {%endfor%}
+    </select>
+    <input type='submit' name='apply-action' value='Apply' />
+</p>
+
+{%if action_message%}
+<p>{{action_message}}</p>
+{% if action_errors %}
+<p>Errors:</p>
+<table class='pretty-table'>
+<tr>
+    <th>ID</th>
+    <th>Message</th>
+{% for err in action_errors %}
+<tr><th>{{err.0.pk}}</th><td>{{err.1}}</td></tr>
+{%endfor%}
+</ul>
+{%endif%}
+{%endif%}
+</form>
 
 {% endblock %}

@@ -353,8 +353,42 @@ request_list_orders = (
     ('submitter',   'Submitter',        ('submitter', )),
 )
 
+def list_to_keys(lst):
+    dct = {}
+    for key in lst:
+        dct[key] = True
+    return dct
+
 @login_required
 def show_requests(http_request, ):
+    # BULK ACTIONS
+    actions = vouchers.models.BulkRequestAction.filter_can_only(
+        vouchers.models.bulk_request_actions,
+        http_request.user,
+    )
+    apply_action_message = None
+    apply_action_errors = []
+    if 'select' in http_request.REQUEST:
+        selected_rr_ids = [ int(item) for item in http_request.REQUEST.getlist('select') ]
+    else:
+        selected_rr_ids = []
+    if "apply-action" in http_request.POST:
+        action_name = http_request.POST['action']
+        if action_name == 'none':
+            apply_action_message = "No action selected."
+        else:
+            matching_actions = [ action for action in actions if action.name == action_name]
+            if(len(matching_actions) > 0):
+                action = matching_actions[0]
+                rrs = ReimbursementRequest.objects.filter(pk__in=selected_rr_ids)
+                for rr in rrs:
+                    success, msg = action.do(http_request, rr)
+                    if not success:
+                        apply_action_errors.append((rr, msg))
+                apply_action_message = '"%s" applied to %d request(s) (%d errors encountered)' % (action.label, len(rrs), len(apply_action_errors), )
+            else:
+                apply_action_message = "Unknown or forbidden action requested."
+
     # PERMISSION-BASED REQUEST FILTERING
     if http_request.user.has_perm('vouchers.can_list'):
         qs = ReimbursementRequest.objects.all()
@@ -397,6 +431,10 @@ def show_requests(http_request, ):
         http_request,
         queryset=qs,
         extra_context={
+            'actions' : actions,
+            'selected_ids'  : list_to_keys(selected_rr_ids),
+            'action_message': apply_action_message,
+            'action_errors' : apply_action_errors,
             'useronly': useronly,
             'order'   : order,
             'orders'  : request_list_orders,

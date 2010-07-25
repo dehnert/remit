@@ -249,3 +249,62 @@ stock_emails = {
         context = 'request',
     ),
 }
+
+class BulkRequestAction:
+    def __init__(self, name, label, action, perm_predicate=None, ):
+        self.name = name
+        self.label = label
+        self.action = action
+        if perm_predicate is None:
+            perm_predicate = lambda user: True
+        elif perm_predicate == True:
+            perm_predicate = lambda user: True
+        self.perm_predicate = perm_predicate
+    def can(self, user):
+        return self.perm_predicate(user)
+    def do(self, http_request, rr, ):
+        if self.can(http_request.user):
+            return self.action(http_request, rr, )
+        else:
+            return False, "permission denied"
+    def __str__(self):
+        return self.label
+    @classmethod
+    def filter_can_only(cls, actions, user):
+        return [ action for action in actions if action.can(user) ]
+def bulk_action_approve(http_request, rr):
+    approver = http_request.user
+    signatory_name = http_request.user.get_full_name()
+    if rr.voucher:
+        return False, "already approved"
+    else:
+        rr.approve(approver, signatory_name)
+        return True, "request approved"
+
+def bulk_action_email_factory(stock_email_obj):
+    assert stock_email_obj.context == 'request'
+    def inner(http_request, rr):
+        stock_email_obj.send_email_request(rr)
+        return True, "mail sent"
+    return inner
+def perm_checker(perm):
+    def predicate(user):
+        return user.has_perm(perm)
+    return predicate
+
+bulk_request_actions = []
+if settings.SIGNATORY_EMAIL:
+    bulk_request_actions.append(BulkRequestAction(
+        name='approve',
+        label='Approve Requests',
+        action=bulk_action_approve,
+        perm_predicate=perm_checker('vouchers.can_approve'),
+    ))
+for name, stockemail in stock_emails.items():
+    if stockemail.context == 'request':
+        bulk_request_actions.append(BulkRequestAction(
+            name='email/%s' % name,
+            label='Stock Email: %s' % stockemail.label,
+            action=bulk_action_email_factory(stockemail),
+            perm_predicate=perm_checker('vouchers.can_email'),
+        ))
