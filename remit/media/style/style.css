@@ -95,3 +95,13 @@ span.username
 {
     font-family: "Courier", monospace;
 }
+
+.select-modifiers li
+{
+    display: inline;
+}
+.select-modifiers li a
+{
+    border: 1px solid black;
+    padding: 0.25em;
+}

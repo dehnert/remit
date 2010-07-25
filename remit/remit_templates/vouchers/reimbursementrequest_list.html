@@ -83,6 +83,29 @@
 {% endfor %}
 </table>
 
+<ul class='select-modifiers'>
+<li><a id='select-all'   href='#'>Select All</a></li>
+<li><a id='select-none'  href='#'>Select None</a></li>
+<li><a id='select-other' href='#'>Invert Selection</a></li>
+</ul>
+
+<script type='text/javascript'>
+$('#select-all').click(function(){
+    $('#request-list input:checkbox').attr('checked', 'checked');
+    return false;
+});
+$('#select-none').click(function(){
+    $('#request-list input:checkbox').removeAttr('checked');
+    return false;
+});
+$('#select-other').click(function(){
+    $('#request-list input:checkbox').each(function(){
+        this.checked = !this.checked;
+    });
+    return false;
+});
+</script>
+
 <h3>Bulk Actions</h3>
 
 <p>
