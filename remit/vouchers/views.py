@@ -354,18 +354,18 @@ request_list_orders = (
 )
 
 @login_required
-def show_requests(request, ):
+def show_requests(http_request, ):
     # PERMISSION-BASED REQUEST FILTERING
-    if request.user.has_perm('vouchers.can_list'):
+    if http_request.user.has_perm('vouchers.can_list'):
         qs = ReimbursementRequest.objects.all()
         useronly = False
     else:
-        qs = ReimbursementRequest.objects.filter(get_related_requests_qobj(request.user))
+        qs = ReimbursementRequest.objects.filter(get_related_requests_qobj(http_request.user))
         useronly = True
 
     # SORTING
-    if 'order' in request.REQUEST:
-        order_row = [row for row in request_list_orders if row[0] == request.REQUEST['order']]
+    if 'order' in http_request.REQUEST:
+        order_row = [row for row in request_list_orders if row[0] == http_request.REQUEST['order']]
         if order_row:
             order, label, cols = order_row[0]
             qs = qs.order_by(*cols)
@@ -375,8 +375,8 @@ def show_requests(request, ):
         order = 'default'
 
     # DISCRETIONARY REQUEST FILTERING
-    if 'approval_status' in request.REQUEST:
-        approval_status = request.REQUEST['approval_status']
+    if 'approval_status' in http_request.REQUEST:
+        approval_status = http_request.REQUEST['approval_status']
     else:
         approval_status = vouchers.models.APPROVAL_STATE_PENDING
     if approval_status == 'all':
@@ -394,7 +394,7 @@ def show_requests(request, ):
 
     # GENERATE THE REQUEST
     return list_detail.object_list(
-        request,
+        http_request,
         queryset=qs,
         extra_context={
             'useronly': useronly,
