@@ -13,6 +13,8 @@
 {%endif%}
 
 <form>
+<h3>Filter and Sort</h3>
+
 <table class='pretty-table'>
 <tr>
     <th>Approval Status</th>
@@ -40,6 +42,7 @@
 <p><br /></p>
 
 <form method='post' action=''>
+<h3>Request List</h3>
 
 <table class='pretty-table' id='request-list'>
 <tr>
@@ -80,7 +83,9 @@
 {% endfor %}
 </table>
 
-<p>Bulk action:
+<h3>Bulk Actions</h3>
+
+<p>
     <select name='action'>
         <option value="none" selected="selected">-----------</option>
         {% for action in actions %}
