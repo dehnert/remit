@@ -12,7 +12,9 @@
 <p>You have permission to list all vouchers.</p>
 {%endif%}
 
-<form>
+<form method='get' action=''>
+<h3>Filter and Sort</h3>
+
 <table class='pretty-table'>
 <tr>
     <th>Approval Status</th>
@@ -32,14 +34,17 @@
     </select></td>
 </tr>
 <tr>
-    <th colspan='2'><input type='submit' name='submit' value='Submit'></th>
+    <th colspan='2'><input type='submit' name='submit' value='Submit' /></th>
 </tr>
 </table>
 </form>
 
 <p><br /></p>
 
-<table class='pretty-table'>
+<form method='post' action=''>
+<h3>Request List</h3>
+
+<table class='pretty-table' id='request-list'>
 <tr>
     <th>#</th>
     <th>Name</th>
@@ -48,10 +53,12 @@
     <th>Accounts</th>
     <th>Approval state (date)</th>
 </tr>
-
 {% for object in object_list %}
 <tr>
-    <td><a href='{% url review_request object.pk %}'>{{ object.pk }}</a></td>
+    <td>
+        <input type='checkbox' name='select' value='{{object.pk}}'{%ifin object.pk selected_ids %} checked='checked'{%endifin%}></input>
+        <a href='{% url review_request object.pk %}'>{{ object.pk }}</a>
+    </td>
     <td>
         <a href='{% url review_request object.pk %}'>{{ object.name }}</a>
         {% if object.documentation %}<br />(has docs){%endif%}
@@ -75,5 +82,56 @@
 </tr>
 {% endfor %}
 </table>
+
+<ul class='select-modifiers'>
+<li><a id='select-all'   href='#'>Select All</a></li>
+<li><a id='select-none'  href='#'>Select None</a></li>
+<li><a id='select-other' href='#'>Invert Selection</a></li>
+</ul>
+
+<script type='text/javascript'>
+$('#select-all').click(function(){
+    $('#request-list input:checkbox').attr('checked', 'checked');
+    return false;
+});
+$('#select-none').click(function(){
+    $('#request-list input:checkbox').removeAttr('checked');
+    return false;
+});
+$('#select-other').click(function(){
+    $('#request-list input:checkbox').each(function(){
+        this.checked = !this.checked;
+    });
+    return false;
+});
+</script>
+
+<h3>Bulk Actions</h3>
+
+<p>
+    <select name='action'>
+        <option value="none" selected="selected">-----------</option>
+        {% for action in actions %}
+        <option value='{{action.name}}'>{{action.label}}</option>
+        {%endfor%}
+    </select>
+    <input type='submit' name='apply-action' value='Apply' />
+</p>
+
+{%if action_message%}
+<p>{{action_message}}</p>
+{% if action_errors %}
+<p>Errors:</p>
+<table class='pretty-table'>
+<tr>
+    <th>ID</th>
+    <th>Message</th>
+{% for err in action_errors %}
+<tr><th>{{err.0.pk}}</th><td>{{err.1}}</td></tr>
+{%endfor%}
+</ul>
+{%endif%}
+{%endif%}
+</form>
 
 {% endblock %}

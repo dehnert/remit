@@ -256,21 +256,10 @@ def review_request(http_request, object_id):
         if http_request.method == 'POST' and 'approve' in http_request.REQUEST:
             approve_form = VoucherizeForm(http_request.POST)
             if approve_form.is_valid():
-                voucher = request_obj.convert(
-                    approve_form.cleaned_data['name'],
-                    signatory_email=approve_form.cleaned_data['email'],)
-                tmpl = get_template('vouchers/emails/request_approval_admin.txt')
-                ctx = Context({
-                    'approver': http_request.user,
-                    'request': request_obj,
-                })
-                body = tmpl.render(ctx)
-                mail_admins(
-                    'Request approval: %s approved $%s' % (
-                        http_request.user,
-                        request_obj.amount,
-                    ),
-                    body,
+                request_obj.approve(
+                    approver=http_request.user,
+                    signatory_name=approve_form.cleaned_data['name'],
+                    signatory_email=approve_form.cleaned_data['email'],
                 )
                 approve_message = 'Created new voucher from request'
         else:
@@ -364,17 +353,53 @@ request_list_orders = (
     ('submitter',   'Submitter',        ('submitter', )),
 )
 
+def list_to_keys(lst):
+    dct = {}
+    for key in lst:
+        dct[key] = True
+    return dct
+
 @login_required
-def show_requests(request, ):
-    if request.user.has_perm('vouchers.can_list'):
+def show_requests(http_request, ):
+    # BULK ACTIONS
+    actions = vouchers.models.BulkRequestAction.filter_can_only(
+        vouchers.models.bulk_request_actions,
+        http_request.user,
+    )
+    apply_action_message = None
+    apply_action_errors = []
+    if 'select' in http_request.REQUEST:
+        selected_rr_ids = [ int(item) for item in http_request.REQUEST.getlist('select') ]
+    else:
+        selected_rr_ids = []
+    if "apply-action" in http_request.POST:
+        action_name = http_request.POST['action']
+        if action_name == 'none':
+            apply_action_message = "No action selected."
+        else:
+            matching_actions = [ action for action in actions if action.name == action_name]
+            if(len(matching_actions) > 0):
+                action = matching_actions[0]
+                rrs = ReimbursementRequest.objects.filter(pk__in=selected_rr_ids)
+                for rr in rrs:
+                    success, msg = action.do(http_request, rr)
+                    if not success:
+                        apply_action_errors.append((rr, msg))
+                apply_action_message = '"%s" applied to %d request(s) (%d errors encountered)' % (action.label, len(rrs), len(apply_action_errors), )
+            else:
+                apply_action_message = "Unknown or forbidden action requested."
+
+    # PERMISSION-BASED REQUEST FILTERING
+    if http_request.user.has_perm('vouchers.can_list'):
         qs = ReimbursementRequest.objects.all()
         useronly = False
     else:
-        qs = ReimbursementRequest.objects.filter(get_related_requests_qobj(request.user))
+        qs = ReimbursementRequest.objects.filter(get_related_requests_qobj(http_request.user))
         useronly = True
 
-    if 'order' in request.REQUEST:
-        order_row = [row for row in request_list_orders if row[0] == request.REQUEST['order']]
+    # SORTING
+    if 'order' in http_request.REQUEST:
+        order_row = [row for row in request_list_orders if row[0] == http_request.REQUEST['order']]
         if order_row:
             order, label, cols = order_row[0]
             qs = qs.order_by(*cols)
@@ -383,8 +408,9 @@ def show_requests(request, ):
     else:
         order = 'default'
 
-    if 'approval_status' in request.REQUEST:
-        approval_status = request.REQUEST['approval_status']
+    # DISCRETIONARY REQUEST FILTERING
+    if 'approval_status' in http_request.REQUEST:
+        approval_status = http_request.REQUEST['approval_status']
     else:
         approval_status = vouchers.models.APPROVAL_STATE_PENDING
     if approval_status == 'all':
@@ -400,10 +426,15 @@ def show_requests(request, ):
         else:
             raise Http404('approval_status not known')
 
+    # GENERATE THE REQUEST
     return list_detail.object_list(
-        request,
+        http_request,
         queryset=qs,
         extra_context={
+            'actions' : actions,
+            'selected_ids'  : list_to_keys(selected_rr_ids),
+            'action_message': apply_action_message,
+            'action_errors' : apply_action_errors,
             'useronly': useronly,
             'order'   : order,
             'orders'  : request_list_orders,
