@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 import os
 
@@ -24,7 +26,10 @@ expense_gls = (
     ('Food', None),
     ('Food.Meetings', 421000),
     ('Food.Events', 421200),
-    ('Computer Supplies', 421900),
+    ('IT', None),
+    ('IT.Computer Supplies', 421900),
+    ('IT.On-line Services', 421920),
+    ('Promotional & Memorabilia', 420302),
 )
 
 def add_gl_accounts():
