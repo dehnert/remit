@@ -117,7 +117,7 @@
 {% if approve_message %}
 <p>{{ approve_message }}</p>
 {% else %}
-{% if perms.vouchers.edit_reimbursementrequest %}
+{% if perms.vouchers.change_reimbursementrequest %}
 <p>Optionally, <a href='{% url admin:vouchers_reimbursementrequest_change rr.pk %}'>change this request first</a>.</p>
 {% endif %}
 <form method="post" action="">
