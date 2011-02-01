@@ -39,6 +39,9 @@ ENABLE_SCRIPTS_AUTH = True
 # making browsers want to open in an external application
 LATEX_MIMETYPE = 'application/x-latex'
 
+SHORT_DATETIME_FORMAT = 'Y-m-d G:i'
+SHORT_DATETIME_FORMAT_F = '%Y-%M-%d %H:%M'
+
 from local_settings import *
 
 # Local time zone for this installation. Choices can be found here:

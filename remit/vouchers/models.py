@@ -56,7 +56,7 @@ class ReimbursementRequest(models.Model):
             self.amount,
         )
 
-    def create_transfers(self, signatory, signatory_email=None):
+    def create_transfers(self, ):
         finance_core.models.make_transfer(
             self.name,
             self.amount,
@@ -107,22 +107,38 @@ class ReimbursementRequest(models.Model):
         signatory_name: name of signatory
         signatory_email: email address of signatory (provide None for default)
         """
-        voucher = self.convert_to_voucher(signatory_name, signatory_email,)
+        self.convert_to_voucher(signatory_name, signatory_email,)
         tmpl = get_template('vouchers/emails/request_approval_admin.txt')
         ctx = Context({
             'approver': approver,
             'request': self,
+            'approval_type': 'voucher',
         })
         body = tmpl.render(ctx)
         mail_admins(
-            'Request approval: %s approved $%s' % (
+            'Request approval: %s approved $%s [voucher]' % (
                 approver,
                 self.amount,
             ),
             body,
         )
 
-    def approve_with_rfp(self, approver, ):
+    def approve_as_rfp(self, approver, ):
+        self.convert_to_rfp()
+        tmpl = get_template('vouchers/emails/request_approval_admin.txt')
+        ctx = Context({
+            'approver': approver,
+            'request': self,
+            'approval_type': 'RFP',
+        })
+        body = tmpl.render(ctx)
+        mail_admins(
+            'Request approval: %s approved $%s [RFP]' % (
+                approver,
+                self.amount,
+            ),
+            body,
+        )
         
 
     def label(self, ):
@@ -173,6 +189,11 @@ class Voucher(models.Model):
             ('generate_vouchers', 'Can generate vouchers',),
         )
 
+class RFP(models.Model):
+    create_time = models.DateTimeField(default=datetime.datetime.now)
+
+    def __unicode__(self, ):
+        return "RFP: %s" % (self.create_time.strftime(settings.SHORT_DATETIME_FORMAT_F), )
 
 class Documentation(models.Model):
     backing_file = models.FileField(upload_to='documentation', verbose_name='File', help_text='PDF files only', )
@@ -288,6 +309,7 @@ class BulkRequestAction:
     @classmethod
     def filter_can_only(cls, actions, user):
         return [ action for action in actions if action.can(user) ]
+
 def bulk_action_approve(http_request, rr):
     approver = http_request.user
     signatory_name = http_request.user.get_full_name()
@@ -296,6 +318,14 @@ def bulk_action_approve(http_request, rr):
     else:
         rr.approve(approver, signatory_name)
         return True, "request approved"
+
+def bulk_action_approve_as_rfp(http_request, rr):
+    approver = http_request.user
+    if rr.rfp:
+        return False, "already marked as RFPized"
+    else:
+        rr.approve_as_rfp(approver, )
+        return True, "request marked as RFPized"
 
 def bulk_action_email_factory(stock_email_obj):
     assert stock_email_obj.context == 'request'
@@ -316,6 +346,12 @@ if settings.SIGNATORY_EMAIL:
         action=bulk_action_approve,
         perm_predicate=perm_checker('vouchers.can_approve'),
     ))
+bulk_request_actions.append(BulkRequestAction(
+    name='approve_as_rfp',
+    label='Mark Requests as RFPized',
+    action=bulk_action_approve_as_rfp,
+    perm_predicate=perm_checker('vouchers.can_approve'),
+))
 for name, stockemail in stock_emails.items():
     if stockemail.context == 'request':
         bulk_request_actions.append(BulkRequestAction(

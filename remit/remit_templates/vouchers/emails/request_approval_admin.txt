@@ -17,6 +17,7 @@ Request Time:       {{request.request_time}}
 Printing Time:      {{request.printing_time}}
 Approval Status:    {{ request.approval_status|approval_status }}
 Approval Time:      {{ request.approval_time }}
+Approval Type:      {{ approval_type }}
 
 Check Address:
 {{request.check_to_addr}}

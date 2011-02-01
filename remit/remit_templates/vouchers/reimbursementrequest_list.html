@@ -77,7 +77,13 @@
         GL: {{ object.expense_area|budgetarea_pathstr:2 }}
     </td>
     <td class='request-status-{{ object.approval_status|approval_status_class}}'>
-        {{ object.approval_status|approval_status }} ({{ object.approval_time }})
+        {{ object.approval_status|approval_status }} ({{ object.approval_time|date:"SHORT_DATETIME_FORMAT"}})
+        {% if object.voucher %}
+        <br />[Voucher: {{object.voucher.pk}}]
+        {% endif %}
+        {% if object.rfp %}
+        <br />[{{object.rfp}}]
+        {% endif %}
     </td>
 </tr>
 {% endfor %}
