@@ -36,6 +36,7 @@ class ReimbursementRequest(models.Model):
     description = models.TextField(blank=True, verbose_name='long description', )
     documentation = models.ForeignKey('Documentation', null=True, blank=True, )
     voucher       = models.ForeignKey('Voucher',       null=True, )
+    rfp           = models.ForeignKey('RFP',           null=True, blank=True, )
 
     class Meta:
         permissions = (
@@ -55,7 +56,19 @@ class ReimbursementRequest(models.Model):
             self.amount,
         )
 
-    def convert(self, signatory, signatory_email=None):
+    def create_transfers(self, signatory, signatory_email=None):
+        finance_core.models.make_transfer(
+            self.name,
+            self.amount,
+            finance_core.models.LAYER_EXPENDITURE,
+            self.budget_term,
+            self.budget_area,
+            self.expense_area,
+            self.description,
+            self.incurred_time,
+        )
+
+    def convert_to_voucher(self, signatory, signatory_email=None):
         if signatory_email is None:
             signatory_email = settings.SIGNATORY_EMAIL
         voucher = Voucher()
@@ -72,19 +85,19 @@ class ReimbursementRequest(models.Model):
         voucher.gl = self.expense_area.get_account_number()
         voucher.documentation = self.documentation
         voucher.save()
-        finance_core.models.make_transfer(
-            self.name,
-            self.amount,
-            finance_core.models.LAYER_EXPENDITURE,
-            self.budget_term,
-            self.budget_area,
-            self.expense_area,
-            self.description,
-            self.incurred_time,
-        )
+        self.create_transfers()
         self.approval_status = 1
         self.approval_time = datetime.datetime.now()
         self.voucher = voucher
+        self.save()
+
+    def convert_to_rfp(self, ):
+        rfp = RFP()
+        rfp.save()
+        self.create_transfers()
+        self.approval_status = APPROVAL_STATE_APPROVED
+        self.approval_time = datetime.datetime.now()
+        self.rfp = rfp
         self.save()
 
     def approve(self, approver, signatory_name, signatory_email=None, ):
@@ -94,7 +107,7 @@ class ReimbursementRequest(models.Model):
         signatory_name: name of signatory
         signatory_email: email address of signatory (provide None for default)
         """
-        voucher = self.convert(signatory_name, signatory_email,)
+        voucher = self.convert_to_voucher(signatory_name, signatory_email,)
         tmpl = get_template('vouchers/emails/request_approval_admin.txt')
         ctx = Context({
             'approver': approver,
@@ -108,6 +121,9 @@ class ReimbursementRequest(models.Model):
             ),
             body,
         )
+
+    def approve_with_rfp(self, approver, ):
+        
 
     def label(self, ):
         return settings.GROUP_ABBR + unicode(self.pk) + 'RR'
