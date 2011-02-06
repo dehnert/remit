@@ -55,7 +55,11 @@
 </tr>
 <tr>
     <th>Documentation</th>
+    {% if rr.documentation %}
     <td><a href='{{rr.documentation.backing_file.url}}'>{{rr.documentation}}</a></td>
+    {% else %}
+    <td>No documentation submitted</td>
+    {% endif %}
 </tr>
 <tr>
     <th>Request Time</th>
