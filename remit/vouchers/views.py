@@ -196,7 +196,7 @@ def review_request(http_request, object_id):
         else:
             new = False
 
-    if (user.has_perm('vouchers.view_requests') or
+    if (user.has_perm('vouchers.can_list') or
         user.username == request_obj.submitter or
         user.email.upper() == request_obj.check_to_email.upper()
         ):
