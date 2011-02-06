@@ -2,6 +2,8 @@
 {% autoescape off %}
 User '{{submitter}}' ({{submitter.first_name}} {{submitter.last_name}} --- {{submitter.email}}) just submitted a request.
 
+View online: {{ request.review_link }}
+
 Request ID:         {{request.label}}
 Short description:  {{request.name}}
 Long description:   {{request.description}}

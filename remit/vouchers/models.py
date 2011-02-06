@@ -4,6 +4,7 @@ import finance_core
 from finance_core.models import BudgetArea, BudgetTerm
 
 from django.core.mail import send_mail, mail_admins
+from django.core.urlresolvers import reverse
 from django.template import Context, Template
 from django.template.loader import get_template
 
@@ -139,7 +140,11 @@ class ReimbursementRequest(models.Model):
             ),
             body,
         )
-        
+
+
+    def review_link(self, ):
+        path = settings.SITE_URL_BASE + reverse('review_request', kwargs=dict(object_id=self.id,))
+        return path
 
     def label(self, ):
         return settings.GROUP_ABBR + unicode(self.pk) + 'RR'
