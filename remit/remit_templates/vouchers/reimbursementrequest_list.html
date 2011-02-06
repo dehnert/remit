@@ -60,8 +60,8 @@
         <a href='{% url review_request object.pk %}'>{{ object.pk }}</a>
     </td>
     <td>
-        <a href='{% url review_request object.pk %}'>{{ object.name }}</a>
-        {% if object.documentation %}<br />(has docs){%endif%}
+        <em><a href='{% url review_request object.pk %}'>{{ object.name }}</a></em>
+        {% if object.documentation %}<br /><a href='{{object.documentation.backing_file.url}}'>(view docs)</a>{%endif%}
     </td>
     <td>
         ${{ object.amount }}
