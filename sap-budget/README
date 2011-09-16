@@ -1,0 +1,10 @@
+parser.py is designed to parse a summary report from SAPGUI, combine GLs into
+categories using a user-defined mapping, and produce a summary file with totals
+for each of the categories.
+
+parser.py takes three filename arguments:
+* summary: the SAPGUI summary report (exported using the "download" function)
+* accounts: account/category mapping file. The first column should be the category, and the second should be the account name (specifically, as it appears in the summary report --- which has a column of "     account number - account name" type elements). Additional columns may be included, but will be ignored. This may be useful for leaving notes for yourself about why an account is in a particular category.
+* output: CSV output file
+
+parser.py will read the first two files, write CSV output into the output file, and save some notes (e.g., summary rows that don't look like they have relevant info, accounts without a category, etc.) to stdout.
