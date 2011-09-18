@@ -8,3 +8,15 @@ parser.py takes three filename arguments:
 * output: CSV output file
 
 parser.py will read the first two files, write CSV output into the output file, and save some notes (e.g., summary rows that don't look like they have relevant info, accounts without a category, etc.) to stdout.
+
+To use SAPGUI to get the summary:
+1) Run "add sapgui; saplogon" from an Athena machine
+2) Type "ZSTM" into the box at the top and hit enter to load the summary report settings page
+3) Fill in the appropriate fiscal period (probably 12/YYYY) and cost center (into the "cost object (unknown type)" box)
+4) Run the report (hit the clock with the checkmark) and click through the warnings
+5) Select the "download" option and save the file somewhere relevant
+
+To create the accounts file, you can run the program with an empty one (e.g.,
+/dev/null) and grep for lines starting with "Misc". Modify the text you get
+from that to replace all the "Misc" categories with useful names, and then
+rerun with that as your accounts file.
