@@ -9,7 +9,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        issues = orm['auth.user'].objects.filter(password__in=['', 'ScriptsSSLAuth'])
+        issues = orm['auth.user'].objects.filter(password__in=['', 'SocketAuth'])
         issues.update(password=UNUSABLE_PASSWORD)
 
     def backwards(self, orm):
