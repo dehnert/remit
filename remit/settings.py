@@ -82,8 +82,9 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    #http://docs.djangoproject.com/en/dev/howto/auth-remote-user/
-    #'django.contrib.auth.middleware.RemoteUserMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
