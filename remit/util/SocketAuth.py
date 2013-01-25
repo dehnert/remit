@@ -34,7 +34,8 @@ class SocketAuthBackend():
                 else:
                     return user
             except User.DoesNotExist:
-                user = User(username=username, password='SocketAuth')
+                user = User(username=username)
+                user.set_unusable_password()
                 user.is_staff = False
                 user.is_superuser = False
                 # Is there a race condition here? Yes.
