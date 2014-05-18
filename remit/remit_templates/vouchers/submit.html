@@ -23,6 +23,7 @@
     <th colspan='2'>Request details:</th>
 </tr>
 {{ form.as_table }}
+{% csrf_token %}
 <tr><th colspan='2'><input type='submit' value='Request Reimbursement' /></th></tr>
 </table>
 </form>
