@@ -6,9 +6,11 @@
     * ADMINS
     * Database configuration
     * SERVER_EMAIL
+    * SITE_URL_BASE -- for dev installs, probably "http://localhost:8006" or similar
+    * For dev installs, you'll probably want DEBUG=True
     * Any other settings you want
 3.  Create local_settings_after.py (possibly empty)
-4.  Run "./manage.py syncdb; ./manage.py migrate" to set up the database
+4.  Run "./manage.py syncdb && ./manage.py migrate" to set up the database
 5.  Run "./util/setup.py" to install the basic accounts (Assets, Expenses, Income, plus some common GLs)
 6.  Run "./util/add_accounts" to add new accounts
     * First argument: path to the base account --- for example, "Accounts.Assets"

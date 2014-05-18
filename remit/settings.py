@@ -35,14 +35,12 @@ LATEX_MIMETYPE = 'application/x-latex'
 SHORT_DATETIME_FORMAT = 'Y-m-d G:i'
 SHORT_DATETIME_FORMAT_F = '%Y-%M-%d %H:%M'
 
-from local_settings import *
-
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'America/New_York'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -54,6 +52,8 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
+from local_settings import *
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = SITE_ROOT + '/media/'
@@ -62,6 +62,8 @@ MEDIA_ROOT = SITE_ROOT + '/media/'
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = SITE_WEB_PATH + '/media/'
+
+STATIC_URL = SITE_WEB_PATH + '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
