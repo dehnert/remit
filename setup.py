@@ -8,6 +8,10 @@ setup(
         "pysapweb",
         "django",
         "django-treebeard",
+        "south",
+        # python-ldap is a C extension with various build dependencies
+        # on Ubuntu, try apt-get build-dep python-ldap
+        "python-ldap"
     ],
 
     author = "Alex Dehnert",
