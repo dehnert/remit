@@ -1,7 +1,7 @@
 import vouchers.models
 from vouchers.models import ReimbursementRequest, Documentation
 from finance_core.models import BudgetTerm, BudgetArea
-from util.shortcuts import get_403_response
+from util.shortcuts import get_403_response, ListViewWithContext
 
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render_to_response, get_object_or_404
@@ -16,7 +16,6 @@ from django.core.mail import send_mail, mail_admins
 from django.db.models import Q
 from django.template import Context, Template
 from django.template.loader import get_template
-from django.views.generic import list_detail
 
 import decimal
 
@@ -427,8 +426,7 @@ def show_requests(http_request, ):
             raise Http404('approval_status not known')
 
     # GENERATE THE REQUEST
-    return list_detail.object_list(
-        http_request,
+    callable = ListViewWithContext.as_view(
         queryset=qs,
         extra_context={
             'actions' : actions,
@@ -443,3 +441,4 @@ def show_requests(http_request, ):
             'pagename': 'list_requests',
         },
     )
+    return callable(http_request)
