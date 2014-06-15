@@ -2,15 +2,30 @@
 import datetime
 from south.db import db
 from south.v2 import DataMigration
-from django.contrib.auth.hashers import UNUSABLE_PASSWORD
+import django.contrib.auth.hashers
 from django.db import models
+from django.db.models import F
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
         issues = orm['auth.user'].objects.filter(password__in=['', 'SocketAuth'])
-        issues.update(password=UNUSABLE_PASSWORD)
+        try: # pre-1.6
+            new_password = django.contrib.auth.hashers.UNUSABLE_PASSWORD
+        except AttributeError: # post-1.6
+            # See https://code.djangoproject.com/ticket/20079 for details on the change.
+            # Ideally, we'd use a different suffix per user, but I don't want
+            # to deal with that, and this is probably acceptably secure.
+            #
+            # Also, it seems a little unlikely that this code will actually
+            # run -- it requires an install that hasn't already run the
+            # migration (notably, esp.mit.edu has already), but *does* have
+            # accounts with SocketAuth passwords.
+            prefix = django.contrib.auth.hashers.UNUSABLE_PASSWORD_PREFIX
+            suffix = django.contrib.auth.hashers.get_random_string(django.contrib.auth.hashers.UNUSABLE_PASSWORD_SUFFIX_LENGTH)
+            new_password = prefix + F("password") + prefix + suffix
+        issues.update(password=new_password)
 
     def backwards(self, orm):
         "Write your backwards methods here."
