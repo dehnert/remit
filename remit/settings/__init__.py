@@ -2,7 +2,7 @@
 import os
 import sys
 
-SITE_ROOT = os.path.normpath(os.path.dirname(__file__))
+SITE_ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 SITE_WEB_PATH = ''
 DEFAULT_DOMAIN = 'mit.edu'
 
@@ -52,7 +52,7 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-from local_settings import *
+from local import *
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -125,4 +125,4 @@ INSTALLED_APPS = (
 EMAIL_SUBJECT_PREFIX = "[Remit: %s] " % (GROUP_ABBR,)
 USER_EMAIL_SIGNATURE = "%s Treasury" % (GROUP_NAME,)
 
-from local_settings_after import *
+from local_after import *
