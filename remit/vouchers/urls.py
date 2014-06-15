@@ -1,5 +1,4 @@
-from django.conf.urls.defaults import *
-from django.views.generic.list_detail import object_list
+from django.conf.urls import patterns, include
 from django.contrib.auth.decorators import permission_required
 import vouchers.views
 import vouchers.models
