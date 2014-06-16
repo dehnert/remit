@@ -9,6 +9,8 @@ DEFAULT_DOMAIN = 'mit.edu'
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+ATOMIC_REQUESTS = True
+
 ADMINS = (
     ('Remit team', 'remit-default-addr@mit.edu'),
 )
@@ -84,7 +86,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
