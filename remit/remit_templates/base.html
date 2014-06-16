@@ -1,3 +1,4 @@
+{% load url from future %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -13,14 +14,14 @@
   </head>
   <body>
     <ul class='tab-navigation'>
-        <li{% ifequal pagename "homepage" %} class='selected'{% endifequal %}><a href="{% url homepage %}">Home</a></li>
-        <li{% ifequal pagename "request_reimbursement" %} class='selected'{% endifequal %}><a href="{% url request_reimbursement %}">Request reimbursement</a></li>
-        <li{% ifequal pagename "list_requests" %} class='selected'{% endifequal %}><a href="{% url list_requests %}">List requests</a></li>
+        <li{% ifequal pagename "homepage" %} class='selected'{% endifequal %}><a href="{% url "homepage" %}">Home</a></li>
+        <li{% ifequal pagename "request_reimbursement" %} class='selected'{% endifequal %}><a href="{% url "request_reimbursement" %}">Request reimbursement</a></li>
+        <li{% ifequal pagename "list_requests" %} class='selected'{% endifequal %}><a href="{% url "list_requests" %}">List requests</a></li>
         {% if perms.finance_core.use_reporting %}
-        <li{% ifequal pagename "reporting" %} class='selected'{% endifequal %}><a href="{% url reporting %}">Reporting</a></li>
+        <li{% ifequal pagename "reporting" %} class='selected'{% endifequal %}><a href="{% url "reporting" %}">Reporting</a></li>
         {% endif %}
         {% if user.is_staff %}
-        <li><a href='{% url admin:index %}'>Django Admin</a></li>
+        <li><a href='{% url "admin:index" %}'>Django Admin</a></li>
         {% endif %}
     </ul>
     <div id='content'>
@@ -32,7 +33,7 @@
             {% else %}
             <p>Welcome, <span class='username'>{{user.username}}</span>.</p>
             {% endif %}
-            <p><a href='{% url logout %}'>Logout</a></p>
+            <p><a href='{% url "logout" %}'>Logout</a></p>
         </div>
         {% endif %}
 {% block content %}{% endblock %}

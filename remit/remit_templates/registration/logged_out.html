@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}Logged out of Remit{% endblock %}
 {% block content %}
 
 <h2>Logged out of Remit</h2>
 
-<p>You have been logged out of Remit. You can return to the <a href='{% url homepage %}'>homepage</a> or <a href='{% url login %}'>login again</a>.</p>
+<p>You have been logged out of Remit. You can return to the <a href='{% url "homepage" %}'>homepage</a> or <a href='{% url "login" %}'>login again</a>.</p>
 {% endblock %}
