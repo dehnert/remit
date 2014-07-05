@@ -54,6 +54,9 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
+# Required settings
+# SITE_URL_BASE: used to construct absolute URLs for use in emails
+
 from local import *
 
 # Absolute path to the directory that holds media.
