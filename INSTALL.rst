@@ -18,7 +18,7 @@ As a sequence of commands, this is::
     . bin/activate                                  # enter it (environment)
     pip install --editable git+/mit/remit/remit.git#egg=remit   # install Remit
     cd src/remit/remit/                             # change into the main source directory
-    ./setting/init-dev.sh                           # set up for development
+    ./settings/init-dev.sh                          # set up for development
     ./runserver 8006                                # run the dev server
 
 Production installs
