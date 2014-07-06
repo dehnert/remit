@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 {% load misc %}
 
 {% block title %}List reimbursement requests{% endblock %}
@@ -57,10 +58,10 @@
 <tr>
     <td>
         <input type='checkbox' name='select' value='{{object.pk}}'{%ifin object.pk selected_ids %} checked='checked'{%endifin%}></input>
-        <a href='{% url review_request object.pk %}'>{{ object.pk }}</a>
+        <a href='{% url "review_request" object.pk %}'>{{ object.pk }}</a>
     </td>
     <td>
-        <em><a href='{% url review_request object.pk %}'>{{ object.name }}</a></em>
+        <em><a href='{% url "review_request" object.pk %}'>{{ object.name }}</a></em>
         {% if object.documentation %}<br /><a href='{{object.documentation.backing_file.url}}'>(view docs)</a>{%endif%}
     </td>
     <td>

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Inspired by and partially copied from ESP's backslash stuff
 
 from django import template

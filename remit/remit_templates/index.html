@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}Welcome to Remit{% endblock %}
 {% block content %}
@@ -11,18 +12,18 @@ Remit is software that aims to help MIT student group manage their finances.
 
 <ul>
     {% if user.is_anonymous %}
-    <li><a href='{% url login %}'>Login</a></li>
+    <li><a href='{% url "login" %}'>Login</a></li>
     {% endif %}
-    <li><a href="{% url request_reimbursement %}">Request reimbursement</a></li>
-    <li><a href="{% url list_requests %}">List requests</a></li>
+    <li><a href="{% url "request_reimbursement" %}">Request reimbursement</a></li>
+    <li><a href="{% url "list_requests" %}">List requests</a></li>
     {% if perms.finance_core.use_reporting %}
-    <li><a href="{% url reporting %}">Reporting</a></li>
+    <li><a href="{% url "reporting" %}">Reporting</a></li>
     {% endif %}
     {% if user.is_staff %}
-    <li><a href='{% url admin:index %}'>Django admin interface</a></li>
+    <li><a href='{% url "admin:index" %}'>Django admin interface</a></li>
     {% endif %}
     {% if user.is_authenticated %}
-    <li><a href='{% url logout %}'>Logout</a></li>
+    <li><a href='{% url "logout" %}'>Logout</a></li>
     {% endif %}
 </ul>
 

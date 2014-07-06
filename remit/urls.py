@@ -1,10 +1,11 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 from django.contrib.auth.views import login, logout
 
 import settings
 
 # Necessary views
 import finance_core.views
+from util.shortcuts import TemplateViewWithContext
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -12,7 +13,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
-    (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'index.html', 'extra_context': { 'pagename':'homepage' }, }, 'homepage'),
+    url(r'^$', TemplateViewWithContext.as_view(template_name='index.html', extra_context={ 'pagename':'homepage' }), name='homepage'),
     (r'^vouchers/', include('vouchers.urls')),
     (r'^finance_core/', include('finance_core.urls')),
 

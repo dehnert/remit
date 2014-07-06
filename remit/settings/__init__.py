@@ -2,12 +2,14 @@
 import os
 import sys
 
-SITE_ROOT = os.path.normpath(os.path.dirname(__file__))
+SITE_ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 SITE_WEB_PATH = ''
 DEFAULT_DOMAIN = 'mit.edu'
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+ATOMIC_REQUESTS = True
 
 ADMINS = (
     ('Remit team', 'remit-default-addr@mit.edu'),
@@ -52,7 +54,10 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-from local_settings import *
+# Required settings
+# SITE_URL_BASE: used to construct absolute URLs for use in emails
+
+from local import *
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -84,7 +89,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
@@ -115,6 +119,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.staticfiles',
     'treebeard',
     'south',
     'vouchers',
@@ -125,4 +130,4 @@ INSTALLED_APPS = (
 EMAIL_SUBJECT_PREFIX = "[Remit: %s] " % (GROUP_ABBR,)
 USER_EMAIL_SIGNATURE = "%s Treasury" % (GROUP_NAME,)
 
-from local_settings_after import *
+from local_after import *

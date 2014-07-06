@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 {% load misc %}
 
 {% block title %}Review reimbursement request for "{{ rr.name }}"{% endblock %}
@@ -122,7 +123,7 @@
 <p>{{ approve_message }}</p>
 {% else %}
 {% if perms.vouchers.change_reimbursementrequest %}
-<p>Optionally, <a href='{% url admin:vouchers_reimbursementrequest_change rr.pk %}'>change this request first</a>.</p>
+<p>Optionally, <a href='{% url "admin:vouchers_reimbursementrequest_change" rr.pk %}'>change this request first</a>.</p>
 {% endif %}
 <form method="post" action="">
 <table class='pretty-table'>
